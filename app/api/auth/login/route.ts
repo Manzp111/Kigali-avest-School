@@ -4,17 +4,15 @@ import { loginSchema } from "@/lib/validators/auth/login.validator";
 import { authService } from "@/lib/services/auth.service";
 
 export async function POST(req: Request) {
- 
+  console.log("🚀 LOGIN START");
 
   try {
-    // 1. Parse body
     const body = await req.json();
-  
 
-    // 2. Validate
     const result = loginSchema.safeParse(body);
 
     if (!result.success) {
+      console.log("❌ VALIDATION ERROR:", result.error.flatten());
 
       return NextResponse.json(
         { success: false, errors: result.error.flatten() },
@@ -22,48 +20,45 @@ export async function POST(req: Request) {
       );
     }
 
+    console.log("✅ VALIDATION OK");
 
-    // 3. Auth service (Drizzle or DB logic inside here)
-   
     const user = await authService.login(result.data);
 
-  
     if (!user) {
-      throw new Error("User not found or invalid credentials");
+      return NextResponse.json(
+        { success: false, message: "Invalid credentials" },
+        { status: 401 }
+      );
     }
 
-    // 4. Check env safely
     const accessSecret = process.env.JWT_ACCESS_SECRET;
     const refreshSecret = process.env.JWT_REFRESH_SECRET;
 
     if (!accessSecret || !refreshSecret) {
-      throw new Error("JWT secrets missing in .env");
+      console.log("❌ JWT secrets missing");
+
+      return NextResponse.json(
+        { success: false, message: "Server configuration error" },
+        { status: 500 }
+      );
     }
 
-   
+    console.log("🔐 Creating tokens...");
 
-    // 5. Access token
     const accessToken = jwt.sign(
-      {
-        userId: user.id,
-        role: user.role,
-      },
+      { userId: user.id, role: user.role },
       accessSecret,
       { expiresIn: "15m" }
     );
 
-    // 6. Refresh token
     const refreshToken = jwt.sign(
-      {
-        userId: user.id,
-      },
+      { userId: user.id },
       refreshSecret,
       { expiresIn: "7d" }
     );
 
-   
+    console.log("🟢 TOKENS CREATED");
 
-    // 7. Response
     const response = NextResponse.json({
       success: true,
       accessToken,
@@ -74,28 +69,26 @@ export async function POST(req: Request) {
       },
     });
 
-    // 8. Cookie (refresh token)
     response.cookies.set("refreshToken", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
-      maxAge: 60 * 60 * 24,
+      maxAge: 60 * 60 * 24 * 7, // FIXED (7 days)
     });
 
-    
+    console.log("🍪 REFRESH TOKEN SET");
 
     return response;
   } catch (error: any) {
-    // console.error("💥 [LOGIN ERROR]:", error.message);
-    // console.error(error);
+    console.error("💥 LOGIN ERROR:", error);
 
     return NextResponse.json(
       {
         success: false,
-        message: error.message || "Server error",
+        message: "Internal server error",
       },
-      { status: 400 }
+      { status: 500 }
     );
   }
 }

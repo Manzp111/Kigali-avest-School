@@ -12,6 +12,7 @@
     "@prisma/client": "^7.8.0",
     "bcryptjs": "^3.0.3",
     "drizzle-orm": "^0.45.2",
+    "jose": "^6.2.2",
     "jsonwebtoken": "^9.0.3",
     "next": "16.2.4",
     "pg": "^8.20.0",

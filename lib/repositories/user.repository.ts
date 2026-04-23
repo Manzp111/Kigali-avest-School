@@ -41,4 +41,7 @@ export const userRepository = {
   async countUsers() {
     return db.select().from(users);
   },
+  async getAllUsers() {
+    return db.select().from(users);
+  },
 };
