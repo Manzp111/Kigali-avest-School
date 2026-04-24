@@ -8,7 +8,8 @@ type Announcement = {
   message: string;
 };
 
-const STORAGE_KEY = "seen_announcements";
+// Switched to Session Storage so it resets when the tab is closed/reloaded
+const STORAGE_KEY = "session_seen_announcements";
 
 export default function AnnouncementBanner() {
   const [list, setList] = useState<Announcement[]>([]);
@@ -19,21 +20,22 @@ export default function AnnouncementBanner() {
   const rotateTimer = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
+    // Optional: Clear session storage on every single manual reload 
+    // to ensure the user always sees the latest updates immediately.
+    sessionStorage.removeItem(STORAGE_KEY);
+
     const load = async () => {
       try {
         const res = await fetch("/api/announcement");
         const json = await res.json();
         const published = (json.data || []).filter((a: any) => a.isPublished);
-        const seen = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-        const ONE_DAY = 24 * 60 * 60 * 1000;
-
-        const fresh = published.filter((a: any) => {
-          const lastSeen = seen[a.id];
-          return !lastSeen || Date.now() - lastSeen > ONE_DAY;
-        });
-
-        setList(fresh);
-        setVisible(fresh.length > 0);
+        
+        // We no longer filter by "seen" here if you want them to always 
+        // show up on every reload. If you want them to stay hidden ONLY 
+        // until they click close (but come back on reload), we use the list directly.
+        
+        setList(published);
+        setVisible(published.length > 0);
       } catch (err) {
         console.log("Error:", err);
       }
@@ -75,9 +77,6 @@ export default function AnnouncementBanner() {
       `}</style>
 
       <div style={styles.banner}>
-        {/* LIVE INDICATOR */}
-      
-
         {/* CONTENT */}
         <div 
           style={{
@@ -87,21 +86,20 @@ export default function AnnouncementBanner() {
           }} 
           className="animate-fade"
         >
-            <div style={styles.liveIndicator}>
-          <div style={styles.dot}></div>
-         
-        </div>
+          <div style={styles.liveIndicator}>
+            <div style={styles.dot}></div>
+          </div>
           <div style={styles.title}>{item.title}</div>
           <span style={styles.separator}>•</span>
           <div style={styles.message}>{item.message}</div>
         </div>
 
         {/* COUNTER */}
-        {list.length > 1 && (
+        {/* {list.length > 1 && (
           <div style={styles.counter}>
             {index + 1}/{list.length}
           </div>
-        )}
+        )} */}
       </div>
     </>
   );
@@ -120,27 +118,19 @@ const styles: any = {
     gap: "15px",
     overflow: "hidden",
     position: "relative",
-   
   },
   liveIndicator: {
     display: "flex",
     alignItems: "center",
     gap: "8px",
-    // background: "rgba(0,0,0,0.15)",
-    padding: "4px 10px",
-    borderRadius: "4px",
+    padding: "4px 0px",
   },
   dot: {
-    width: "20px",
+    width: "20px", // Adjusted to be slightly more balanced
     height: "20px",
     borderRadius: "50%",
     border: "1.5px solid #FFFFFF",
     animation: "pulse-brand 2s infinite ease-in-out",
-  },
-  badgeText: {
-    fontSize: "10px",
-    fontWeight: "900",
-    letterSpacing: "1px",
   },
   content: {
     display: "flex",

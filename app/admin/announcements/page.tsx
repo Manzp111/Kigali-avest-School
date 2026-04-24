@@ -1,16 +1,27 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
+import AnnouncementModal from "@/components/announcement/AnnouncementModal";
+import DeleteConfirmModal from "@/components/announcement/DeleteConfirmModal";
 
 type Announcement = {
   id: string;
   title: string;
   message: string;
+  imageUrl?: string;
+  fileUrl?: string;
   isPublished: boolean;
+  publishAt?: string;
+  expiresAt?: string;
+  priority?: number;
+  userId?: string;
   createdAt: string;
+  updatedAt?: string;
 };
 
 type Filter = "all" | "published" | "draft";
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
 
 function formatDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString("en-GB", {
@@ -20,46 +31,15 @@ function formatDate(dateStr: string) {
   });
 }
 
-function Toggle({
-  checked,
-  onChange,
-}: {
-  checked: boolean;
-  onChange: () => void;
-}) {
+// ── Sub-components ────────────────────────────────────────────────────────────
+
+function Toggle({ checked, onChange }: { checked: boolean; onChange: () => void }) {
   return (
     <label style={{ display: "inline-flex", alignItems: "center", cursor: "pointer", gap: 10 }}>
       <span style={{ position: "relative", display: "inline-block", width: 38, height: 21 }}>
-        <input
-          type="checkbox"
-          checked={checked}
-          onChange={onChange}
-          style={{ opacity: 0, width: 0, height: 0, position: "absolute" }}
-        />
-        <span
-          style={{
-            position: "absolute",
-            inset: 0,
-            borderRadius: 100,
-            background: checked ? "#4a7c59" : "#d1d5db",
-            border: `0.5px solid ${checked ? "#3b6348" : "#c4c9d0"}`,
-            transition: "background 0.2s, border-color 0.2s",
-          }}
-        />
-        <span
-          style={{
-            position: "absolute",
-            top: 3,
-            left: 3,
-            width: 15,
-            height: 15,
-            borderRadius: "50%",
-            background: "white",
-            boxShadow: "0 1px 3px rgba(0,0,0,0.18)",
-            transition: "transform 0.2s cubic-bezier(0.34,1.56,0.64,1)",
-            transform: checked ? "translateX(17px)" : "translateX(0)",
-          }}
-        />
+        <input type="checkbox" checked={checked} onChange={onChange} style={{ opacity: 0, width: 0, height: 0, position: "absolute" }} />
+        <span style={{ position: "absolute", inset: 0, borderRadius: 100, background: checked ? "#4a7c59" : "#d1d5db", border: `0.5px solid ${checked ? "#3b6348" : "#c4c9d0"}`, transition: "background 0.2s" }} />
+        <span style={{ position: "absolute", top: 3, left: 3, width: 15, height: 15, borderRadius: "50%", background: "white", boxShadow: "0 1px 3px rgba(0,0,0,0.18)", transition: "transform 0.2s cubic-bezier(0.34,1.56,0.64,1)", transform: checked ? "translateX(17px)" : "translateX(0)" }} />
       </span>
     </label>
   );
@@ -67,31 +47,8 @@ function Toggle({
 
 function StatusBadge({ isPublished }: { isPublished: boolean }) {
   return (
-    <span
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        gap: 5,
-        padding: "4px 10px",
-        borderRadius: 100,
-        fontSize: 11,
-        fontWeight: 500,
-        letterSpacing: "0.04em",
-        fontFamily: "'DM Mono', monospace",
-        background: isPublished ? "#e6f3e9" : "#f3f4f6",
-        color: isPublished ? "#3b6348" : "#6b7280",
-        whiteSpace: "nowrap",
-      }}
-    >
-      <span
-        style={{
-          width: 5,
-          height: 5,
-          borderRadius: "50%",
-          background: isPublished ? "#4a7c59" : "#9ca3af",
-          display: "inline-block",
-        }}
-      />
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "4px 10px", borderRadius: 100, fontSize: 11, fontWeight: 500, letterSpacing: "0.04em", fontFamily: "'DM Mono', monospace", background: isPublished ? "#e6f3e9" : "#f3f4f6", color: isPublished ? "#3b6348" : "#6b7280", whiteSpace: "nowrap" }}>
+      <span style={{ width: 5, height: 5, borderRadius: "50%", background: isPublished ? "#4a7c59" : "#9ca3af", display: "inline-block" }} />
       {isPublished ? "Published" : "Draft"}
     </span>
   );
@@ -133,36 +90,59 @@ function IconSearch() {
   );
 }
 
+// ── Page ──────────────────────────────────────────────────────────────────────
+
+const fonts = `
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap');
+  * { box-sizing: border-box; }
+  body { font-family: 'Outfit', sans-serif; margin: 0; }
+  .ann-row { transition: background 0.12s; }
+  .ann-row:hover { background: #f9fafb; }
+  .action-btn { background: transparent; border: 0.5px solid #e5e7eb; border-radius: 6px; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #9ca3af; transition: all 0.15s; }
+  .action-btn:hover { background: #f3f4f6; color: #374151; border-color: #d1d5db; }
+  .action-btn.danger:hover { background: #fef2f2; color: #dc2626; border-color: #fecaca; }
+  .filter-tab { padding: 5px 13px; border-radius: 7px; font-size: 12px; font-weight: 500; cursor: pointer; border: none; background: transparent; color: #9ca3af; font-family: 'Outfit', sans-serif; transition: all 0.15s; }
+  .filter-tab:hover { color: #374151; }
+  .filter-tab.active { background: #f3f4f6; color: #111827; }
+  .new-btn { display: flex; align-items: center; gap: 8px; padding: 10px 18px; background: #111827; color: white; border: none; border-radius: 9px; font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: opacity 0.15s; }
+  .new-btn:hover { opacity: 0.82; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  .fade-in { animation: fadeIn 0.3s ease both; }
+`;
+
+// Replace with your actual logged-in user id (e.g. from session/auth context)
+const CURRENT_USER_ID = "dfb83430-a417-4a16-a78f-47db8e13576a";
+
 export default function AnnouncementsPage() {
   const [data, setData] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<Filter>("all");
   const [query, setQuery] = useState("");
 
+  // Modal state
+  const [formOpen, setFormOpen] = useState(false);
+  const [editTarget, setEditTarget] = useState<Announcement | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Announcement | null>(null);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+
   useEffect(() => {
     fetchAnnouncements();
   }, []);
 
- async function fetchAnnouncements() {
-  try {
-    const res = await fetch("/api/announcement");
-    const json = await res.json();
-
-    console.log("API RESPONSE:", json);
-
-    const safeData =
-      json.data ??
-      json.announcements ??
-      [];
-
-    setData(Array.isArray(safeData) ? safeData : []);
-  } catch (err) {
-    console.log(err);
-    setData([]); // 🔥 prevent crash
-  } finally {
-    setLoading(false);
+  async function fetchAnnouncements() {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/announcement");
+      const json = await res.json();
+      const safeData = json.data ?? json.announcements ?? [];
+      setData(Array.isArray(safeData) ? safeData : []);
+    } catch (err) {
+      console.error(err);
+      setData([]);
+    } finally {
+      setLoading(false);
+    }
   }
-}
 
   async function togglePublish(id: string, current: boolean) {
     try {
@@ -171,52 +151,57 @@ export default function AnnouncementsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ isPublished: !current }),
       });
-      setData((prev) =>
-        prev.map((a) => (a.id === id ? { ...a, isPublished: !current } : a))
-      );
+      setData((prev) => prev.map((a) => (a.id === id ? { ...a, isPublished: !current } : a)));
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 
-const filtered = useMemo(() => {
-  if (!Array.isArray(data)) return [];
+  // Open create modal
+  function openCreate() {
+    setEditTarget(null);
+    setFormOpen(true);
+  }
 
-  return data.filter((d) => {
-    const matchFilter =
-      filter === "all" ||
-      (filter === "published" && d.isPublished) ||
-      (filter === "draft" && !d.isPublished);
+  // Open edit modal
+  function openEdit(item: Announcement) {
+    setEditTarget(item);
+    setFormOpen(true);
+  }
 
-    const q = query.toLowerCase().trim();
+  // Open delete confirmation
+  function openDelete(item: Announcement) {
+    setDeleteTarget(item);
+    setDeleteOpen(true);
+  }
 
-    const matchQuery =
-      !q ||
-      d.title.toLowerCase().includes(q) ||
-      d.message.toLowerCase().includes(q);
+  // After create/edit success — refetch
+  function handleFormSuccess() {
+    fetchAnnouncements();
+  }
 
-    return matchFilter && matchQuery;
-  });
-}, [data, filter, query]);
+  // After delete success — remove from local state immediately
+  function handleDeleteSuccess() {
+    if (deleteTarget) {
+      setData((prev) => prev.filter((a) => a.id !== deleteTarget.id));
+    }
+  }
+
+  const filtered = useMemo(() => {
+    if (!Array.isArray(data)) return [];
+    return data.filter((d) => {
+      const matchFilter =
+        filter === "all" ||
+        (filter === "published" && d.isPublished) ||
+        (filter === "draft" && !d.isPublished);
+      const q = query.toLowerCase().trim();
+      const matchQuery = !q || d.title.toLowerCase().includes(q) || d.message.toLowerCase().includes(q);
+      return matchFilter && matchQuery;
+    });
+  }, [data, filter, query]);
+
   const published = data.filter((d) => d.isPublished).length;
   const drafts = data.filter((d) => !d.isPublished).length;
-
-  const fonts = `
-    @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap');
-    * { box-sizing: border-box; }
-    body { font-family: 'Outfit', sans-serif; margin: 0; }
-    .ann-row { transition: background 0.12s; }
-    .ann-row:hover { background: #f9fafb; }
-    .action-btn { background: transparent; border: 0.5px solid #e5e7eb; border-radius: 6px; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #9ca3af; transition: all 0.15s; }
-    .action-btn:hover { background: #f3f4f6; color: #374151; border-color: #d1d5db; }
-    .filter-tab { padding: 5px 13px; border-radius: 7px; font-size: 12px; font-weight: 500; cursor: pointer; border: none; background: transparent; color: #9ca3af; font-family: 'Outfit', sans-serif; transition: all 0.15s; }
-    .filter-tab:hover { color: #374151; }
-    .filter-tab.active { background: #f3f4f6; color: #111827; }
-    .new-btn { display: flex; align-items: center; gap: 8px; padding: 10px 18px; background: #111827; color: white; border: none; border-radius: 9px; font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: opacity 0.15s; }
-    .new-btn:hover { opacity: 0.82; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-    .fade-in { animation: fadeIn 0.3s ease both; }
-  `;
 
   if (loading) {
     return (
@@ -235,6 +220,22 @@ const filtered = useMemo(() => {
     <>
       <style>{fonts}</style>
 
+      {/* ── Modals ─────────────────────────────────────── */}
+      <AnnouncementModal
+        open={formOpen}
+        onClose={() => setFormOpen(false)}
+        onSuccess={handleFormSuccess}
+        announcement={editTarget}
+        userId={CURRENT_USER_ID}
+      />
+      <DeleteConfirmModal
+        open={deleteOpen}
+        onClose={() => setDeleteOpen(false)}
+        onSuccess={handleDeleteSuccess}
+        announcement={deleteTarget}
+      />
+
+      {/* ── Page ───────────────────────────────────────── */}
       <div style={{ padding: "2.5rem 2rem", background: "#f9fafb", minHeight: "100vh" }}>
 
         {/* Header */}
@@ -250,7 +251,7 @@ const filtered = useMemo(() => {
               Manage and schedule your published content
             </p>
           </div>
-          <button className="new-btn">
+          <button className="new-btn" onClick={openCreate}>
             <IconPlus />
             New announcement
           </button>
@@ -263,24 +264,10 @@ const filtered = useMemo(() => {
             { label: "Published", value: published, sub: "live now", color: "#3b6348" },
             { label: "Drafts", value: drafts, sub: "pending review", color: "#6b7280" },
           ].map((s) => (
-            <div
-              key={s.label}
-              style={{
-                background: "white",
-                border: "0.5px solid #e5e7eb",
-                borderRadius: 12,
-                padding: "1rem 1.25rem",
-              }}
-            >
-              <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: "#9ca3af", marginBottom: 6 }}>
-                {s.label}
-              </div>
-              <div style={{ fontSize: 30, fontWeight: 300, color: s.color, lineHeight: 1 }}>
-                {s.value}
-              </div>
-              <div style={{ fontSize: 12, color: "#d1d5db", marginTop: 4 }}>
-                {s.sub}
-              </div>
+            <div key={s.label} style={{ background: "white", border: "0.5px solid #e5e7eb", borderRadius: 12, padding: "1rem 1.25rem" }}>
+              <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: "#9ca3af", marginBottom: 6 }}>{s.label}</div>
+              <div style={{ fontSize: 30, fontWeight: 300, color: s.color, lineHeight: 1 }}>{s.value}</div>
+              <div style={{ fontSize: 12, color: "#d1d5db", marginTop: 4 }}>{s.sub}</div>
             </div>
           ))}
         </div>
@@ -292,11 +279,7 @@ const filtered = useMemo(() => {
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "13px 20px", borderBottom: "0.5px solid #f3f4f6" }}>
             <div style={{ display: "flex", gap: 4 }}>
               {(["all", "published", "draft"] as Filter[]).map((f) => (
-                <button
-                  key={f}
-                  className={`filter-tab${filter === f ? " active" : ""}`}
-                  onClick={() => setFilter(f)}
-                >
+                <button key={f} className={`filter-tab${filter === f ? " active" : ""}`} onClick={() => setFilter(f)}>
                   {f.charAt(0).toUpperCase() + f.slice(1)}
                 </button>
               ))}
@@ -318,20 +301,7 @@ const filtered = useMemo(() => {
             <thead>
               <tr style={{ borderBottom: "0.5px solid #f3f4f6" }}>
                 {["#", "Title", "Message", "Status", "Publish", "Actions"].map((h) => (
-                  <th
-                    key={h}
-                    style={{
-                      padding: "10px 20px",
-                      fontSize: 10,
-                      fontWeight: 500,
-                      letterSpacing: "0.09em",
-                      textTransform: "uppercase",
-                      color: "#9ca3af",
-                      textAlign: "left",
-                      fontFamily: "'DM Mono', monospace",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
+                  <th key={h} style={{ padding: "10px 20px", fontSize: 10, fontWeight: 500, letterSpacing: "0.09em", textTransform: "uppercase", color: "#9ca3af", textAlign: "left", fontFamily: "'DM Mono', monospace", whiteSpace: "nowrap" }}>
                     {h}
                   </th>
                 ))}
@@ -347,6 +317,7 @@ const filtered = useMemo(() => {
               ) : (
                 filtered.map((item, i) => (
                   <tr key={item.id} className="ann-row" style={{ borderBottom: i < filtered.length - 1 ? "0.5px solid #f9fafb" : "none" }}>
+
                     {/* # */}
                     <td style={{ padding: "14px 20px", fontFamily: "'DM Mono', monospace", fontSize: 11, color: "#d1d5db", width: 36 }}>
                       {String(i + 1).padStart(2, "0")}
@@ -354,12 +325,8 @@ const filtered = useMemo(() => {
 
                     {/* Title */}
                     <td style={{ padding: "14px 20px" }}>
-                      <div style={{ fontSize: 14, fontWeight: 500, color: "#111827", marginBottom: 2 }}>
-                        {item.title}
-                      </div>
-                      <div style={{ fontSize: 11, color: "#9ca3af", fontFamily: "'DM Mono', monospace" }}>
-                        {formatDate(item.createdAt)}
-                      </div>
+                      <div style={{ fontSize: 14, fontWeight: 500, color: "#111827", marginBottom: 2 }}>{item.title}</div>
+                      <div style={{ fontSize: 11, color: "#9ca3af", fontFamily: "'DM Mono', monospace" }}>{formatDate(item.createdAt)}</div>
                     </td>
 
                     {/* Message */}
@@ -376,19 +343,16 @@ const filtered = useMemo(() => {
 
                     {/* Toggle */}
                     <td style={{ padding: "14px 20px" }}>
-                      <Toggle
-                        checked={item.isPublished}
-                        onChange={() => togglePublish(item.id, item.isPublished)}
-                      />
+                      <Toggle checked={item.isPublished} onChange={() => togglePublish(item.id, item.isPublished)} />
                     </td>
 
                     {/* Actions */}
                     <td style={{ padding: "14px 20px" }}>
                       <div style={{ display: "flex", gap: 6 }}>
-                        <button className="action-btn" title="Edit">
+                        <button className="action-btn" title="Edit" onClick={() => openEdit(item)}>
                           <IconEdit />
                         </button>
-                        <button className="action-btn" title="Delete">
+                        <button className="action-btn danger" title="Delete" onClick={() => openDelete(item)}>
                           <IconDelete />
                         </button>
                       </div>
