@@ -1,5 +1,5 @@
 
-import { Hero } from '@/components/Hero';
+import Hero  from '@/components/Hero';
 import { About } from '@/components/About';
 import { Programs } from '@/components/Programs';
 import { WhyChoose } from '@/components/WhyChoose';

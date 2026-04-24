@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 
 export async function middleware(req: NextRequest) {
-  console.log("🚀 [MIDDLEWARE] Running:", req.nextUrl.pathname);
+  // console.log(" [MIDDLEWARE] Running:", req.nextUrl.pathname);
 
   const authHeader = req.headers.get("authorization");
-  console.log("🔐 Auth header:", authHeader);
+  // console.log("🔐 Auth header:", authHeader);
 
   if (!authHeader) {
     return NextResponse.json(
@@ -30,7 +30,7 @@ export async function middleware(req: NextRequest) {
 
     const { payload } = await jwtVerify(token, secret);
 
-    console.log("👤 VERIFIED USER:", payload);
+    // console.log("👤 VERIFIED USER:", payload);
 
     const requestHeaders = new Headers(req.headers);
     requestHeaders.set("x-user", JSON.stringify(payload));
@@ -41,7 +41,7 @@ export async function middleware(req: NextRequest) {
       },
     });
   } catch (err) {
-    console.log("❌ TOKEN ERROR:", err);
+    // console.log(" TOKEN ERROR:", err);
 
     return NextResponse.json(
       { success: false, message: "Invalid or expired token" },
@@ -51,5 +51,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/api/auth/users/:path*"],
+  matcher: ["/api/aut/user/:path*"],
 };

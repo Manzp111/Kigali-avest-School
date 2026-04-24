@@ -7,10 +7,11 @@ import {
 } from "drizzle-orm/pg-core";
 
 import { randomUUID } from "crypto";
+import { pgEnum } from "drizzle-orm/pg-core";
 
-/* =========================
-   USERS
-========================= */
+
+  //  USERS
+
 export const users = pgTable("users", {
   id: text("id")
     .primaryKey()
@@ -26,9 +27,9 @@ export const users = pgTable("users", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-/* =========================
-   ANNOUNCEMENTS
-========================= */
+
+  //  ANNOUNCEMENTS
+
 export const announcements = pgTable("announcements", {
   id: text("id")
     .primaryKey()
@@ -53,9 +54,14 @@ export const announcements = pgTable("announcements", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-/* =========================
-   GALLERY
-========================= */
+
+  //  GALLERY
+
+export const imageTypeEnum = pgEnum("image_type", [
+  "background",
+  "gallery",
+]);
+
 export const gallery = pgTable("gallery", {
   id: text("id")
     .primaryKey()
@@ -63,21 +69,20 @@ export const gallery = pgTable("gallery", {
 
   title: text("title").notNull(),
   subtitle: text("subtitle"),
+
   imageUrl: text("image_url").notNull(),
 
-  buttonText: text("button_text"),
-  buttonLink: text("button_link"),
+  type: imageTypeEnum("type").default("gallery"),
 
   published: boolean("published").default(false),
-  priority: integer("priority").default(0),
 
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-/* =========================
-   TESTIMONIALS
-========================= */
+
+  //  TESTIMONIALS
+
 export const testimonials = pgTable("testimonials", {
   id: text("id")
     .primaryKey()

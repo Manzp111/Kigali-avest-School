@@ -8,6 +8,27 @@
       "when": 1776950483920,
       "tag": "0000_mysterious_emma_frost",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1777062960270,
+      "tag": "0001_parched_multiple_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1777063190000,
+      "tag": "0002_known_bromley",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1777063741423,
+      "tag": "0003_careless_frank_castle",
+      "breakpoints": true
     }
   ]
 }

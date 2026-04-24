@@ -1,8 +1,14 @@
 import type { Config } from "drizzle-kit";
+import * as dotenv from "dotenv";
+
+// Ensure your environment variables are loaded
+dotenv.config({ path: ".env.local" }); 
 
 export default {
-  schema: "./db/schema.ts",
-  out: "./db/migrations",
+  
+  schema: "./lib/db/schema.ts", 
+  out: "./lib/db/migrations",
+  
   dialect: "postgresql",
   dbCredentials: {
     url: process.env.DATABASE_URL!,

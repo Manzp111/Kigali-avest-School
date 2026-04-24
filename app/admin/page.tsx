@@ -1,117 +1,156 @@
-import React from 'react';
+"use client";
+
+import { useEffect, useState } from "react";
+import Image from "next/image";
 
 export default function DashboardPage() {
-  // Mock data for the dynamic student photos section
-  const topPerformers = [
-    { 
-      name: 'Kamanzi Jean', 
-      grade: 'A+', 
-      image: 'https://images.unsplash.com/photo-1597393353415-b3730f3719fe?q=80&w=200&h=200&fit=crop',
-      trend: '+2.4%'
-    },
-    { 
-      name: 'Uwase Alice', 
-      grade: 'A', 
-      image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=200&h=200&fit=crop',
-      trend: '+1.8%'
-    },
-    { 
-      name: 'Mugisha Eric', 
-      grade: 'A-', 
-      image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200&h=200&fit=crop',
-      trend: '+0.5%'
-    }
-  ];
+  const [gallery, setGallery] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [announcements, setAnnouncements] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const stats = [
-    { label: 'Total Students', value: '1,240', change: '+12%', color: 'text-blue-600' },
-    { label: 'Avg Attendance', value: '94.2%', change: '+2%', color: 'text-emerald-600' },
-    { label: 'Active Teachers', value: '84', change: '0%', color: 'text-slate-600' },
-    { label: 'Pending Fees', value: '$3,400', change: '-5%', color: 'text-rose-600' },
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [gRes, uRes, aRes] = await Promise.all([
+          fetch("/api/gallery"),
+          fetch("/api/auth/users"),
+          fetch("/api/announcement"),
+        ]);
+
+        const gData = await gRes.json();
+        const uData = await uRes.json();
+        const aData = await aRes.json();
+
+        // Increased slice to 4 as requested
+        setGallery(gData.slice(0, 4));
+        setUsers(uData.data?.slice(0, 4) || []);
+        setAnnouncements(aData.data?.slice(0, 4) || []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen text-slate-400">
+        <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+        <p className="font-medium animate-pulse">Synchronizing Dashboard...</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
-      {/* 1. Header Welcome */}
-      <div>
-        <h2 className="text-2xl font-black text-slate-800 tracking-tight">Analytics Overview</h2>
-        <p className="text-slate-500 text-sm font-medium">Monitoring school performance for Term 1, 2026.</p>
+    <div className="p-4 md:p-8 max-w-5xl mx-auto space-y-10">
+      
+      {/* HEADER WITH BRANDING */}
+      <div className="flex items-center gap-6 pb-6 border-b border-slate-100">
+        <div className="relative w-16 h-16">
+          <Image 
+            src="/logo.png" 
+            alt="Logo" 
+            fill 
+            className="object-contain"
+          />
+        </div>
+        <div>
+          <h2 className="text-3xl font-black text-slate-900 tracking-tight">
+            Live Dashboard
+          </h2>
+          <p className="text-slate-500 font-medium italic">
+            Kigali Harvest School Overview
+          </p>
+        </div>
       </div>
 
-      {/* 2. Key Metrics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat) => (
-          <div key={stat.label} className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{stat.label}</p>
-            <div className="flex items-end justify-between mt-2">
-              <h3 className="text-3xl font-black text-slate-800 tracking-tighter">{stat.value}</h3>
-              <span className={`text-[10px] font-bold px-2 py-1 rounded-lg bg-slate-50 ${stat.color}`}>
-                {stat.change}
-              </span>
-            </div>
-          </div>
-        ))}
-      </div>
+      {/* VERTICAL SECTIONS STACK */}
+      <div className="flex flex-col gap-8">
 
-      {/* 3. Main Content Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        {/* Top Performing Students (Dynamic Photos) */}
-        <div className="lg:col-span-2 bg-white rounded-3xl border border-slate-200 p-8 shadow-sm">
-          <div className="flex justify-between items-center mb-8">
-            <h3 className="text-lg font-bold text-slate-800">Top Performing Students</h3>
-            <button className="text-xs font-bold text-blue-600 hover:bg-blue-50 px-3 py-2 rounded-xl transition-colors">
-              View All Rankings
-            </button>
+        {/* 🖼️ RECENT GALLERY SECTION */}
+        <section className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+          <div className="bg-slate-50 px-6 py-4 border-b border-slate-100 flex justify-between items-center">
+            <h3 className="font-bold text-slate-700 flex items-center gap-2">
+              <span className="text-lg">🖼️</span> Recent Gallery Uploads
+            </h3>
+            <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-md uppercase">Live</span>
           </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {topPerformers.map((student, idx) => (
-              <div key={student.name} className="group relative bg-slate-50 rounded-2xl p-6 text-center border border-transparent hover:border-blue-200 hover:bg-white transition-all">
-                <div className="relative inline-block">
-                  <img 
-                    src={student.image} 
-                    alt={student.name} 
-                    className="w-20 h-20 rounded-full object-cover border-4 border-white shadow-lg group-hover:scale-105 transition-transform"
+          <div className="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 min-h-[160px]">
+            {gallery.length > 0 ? gallery.map((item: any) => (
+              <div key={item.id} className="flex flex-col gap-3 p-3 rounded-2xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100 group">
+                <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-slate-100">
+                  <img
+                    src={item.imageUrl}
+                    alt={item.title}
+                    className="w-full h-full rounded object-cover group-hover:scale-110 transition-transform duration-500"
                   />
-                  <div className="absolute -top-1 -right-1 bg-yellow-400 text-[10px] font-black text-white w-7 h-7 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
-                    #{idx + 1}
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-slate-800 truncate">{item.title}</p>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                    {item.type}
+                  </p>
+                </div>
+              </div>
+            )) : <p className="text-slate-400 text-sm col-span-full italic">No recent images found.</p>}
+          </div>
+        </section>
+
+        {/* 📢 RECENT ANNOUNCEMENTS SECTION */}
+        <section className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+          <div className="bg-slate-50 px-6 py-4 border-b border-slate-100 flex justify-between items-center">
+            <h3 className="font-bold text-slate-700 flex items-center gap-2">
+              <span className="text-lg">📢</span> Latest Announcements
+            </h3>
+            <a href="/admin/announcements" className="text-xs font-bold text-slate-400 hover:text-blue-600 transition-colors uppercase">View All</a>
+          </div>
+          <div className="p-2 min-h-[200px]">
+            {announcements.length > 0 ? announcements.map((a: any) => (
+              <div key={a.id} className="p-4 hover:bg-blue-50/50 rounded-2xl transition-colors flex items-start gap-4 group">
+                <div className="w-2 h-2 rounded-full bg-amber-400 mt-2 shrink-0 group-hover:scale-125 transition-transform"></div>
+                <div>
+                  <p className="text-base font-bold text-slate-800">{a.title}</p>
+                  <p className="text-sm text-slate-500 line-clamp-1">
+                    {a.message}
+                  </p>
+                </div>
+              </div>
+            )) : <p className="p-6 text-slate-400 text-sm italic">No active announcements.</p>}
+          </div>
+        </section>
+
+        {/* 👥 RECENT USERS SECTION */}
+        <section className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+          <div className="bg-slate-50 px-6 py-4 border-b border-slate-100">
+            <h3 className="font-bold text-slate-700 flex items-center gap-2">
+              <span className="text-lg">👥</span> Access Management (Recent Users)
+            </h3>
+          </div>
+          <div className="divide-y divide-slate-50 min-h-[150px]">
+            {users.length > 0 ? users.map((user: any) => (
+              <div key={user.id} className="px-6 py-4 flex items-center justify-between hover:bg-slate-50 transition-colors">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xs">
+                    {user.email.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-slate-800">{user.email}</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Registered Account</p>
                   </div>
                 </div>
-                <h4 className="mt-4 font-bold text-slate-800 text-sm truncate">{student.name}</h4>
-                <div className="flex items-center justify-center gap-2 mt-1">
-                  <p className="text-blue-600 font-black text-lg">{student.grade}</p>
-                  <span className="text-[10px] text-emerald-500 font-bold">{student.trend}</span>
-                </div>
+                <span className={`text-[10px] font-black px-2 py-1 rounded-md uppercase ${
+                  user.role === 'admin' ? 'bg-purple-100 text-purple-600' : 'bg-slate-100 text-slate-600'
+                }`}>
+                  {user.role}
+                </span>
               </div>
-            ))}
+            )) : <p className="p-6 text-slate-400 text-sm italic">No users registered recently.</p>}
           </div>
-        </div>
-
-        {/* Quick Summary / Status Card */}
-        <div className="bg-slate-900 rounded-3xl p-8 text-white shadow-xl shadow-slate-200 flex flex-col justify-between">
-          <div>
-            <h3 className="font-bold text-lg mb-2">School Status</h3>
-            <p className="text-slate-400 text-xs leading-relaxed">
-              All departments have submitted their monthly reports. Next board meeting is scheduled for Monday.
-            </p>
-          </div>
-          
-          <div className="mt-8 space-y-4">
-            <div className="bg-white/10 p-4 rounded-2xl border border-white/5">
-              <div className="flex justify-between text-xs font-bold mb-2">
-                <span>Annual Goal</span>
-                <span>85%</span>
-              </div>
-              <div className="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
-                <div className="bg-blue-500 h-full w-[85%]"></div>
-              </div>
-            </div>
-            <button className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold text-xs transition-colors">
-              Download Full Report
-            </button>
-          </div>
-        </div>
+        </section>
 
       </div>
     </div>

@@ -1,27 +1,68 @@
 import { db } from "@/lib/db";
 import { gallery } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import { desc, and, eq } from "drizzle-orm";
+import {
+  CreateGalleryInput,
+  UpdateGalleryInput,
+} from "@/lib/types/gallery.types";
+
 
 export const GalleryRepository = {
-  create: (data: any) =>
-    db.insert(gallery).values(data).returning(),
+  async create(data: CreateGalleryInput) {
+    // Drizzle returning() returns an array [insertedItem]
+    const [result] = await db.insert(gallery).values(data).returning();
+    return result;
+  },
 
-  findAll: () =>
-    db.select().from(gallery),
+async findAll(filters?: { published?: boolean; type?: "background" | "gallery" }) {
+  const conditions = [];
 
-  findById: (id: string) =>
-    db.select().from(gallery).where(eq(gallery.id, id)),
+  if (filters?.published !== undefined) {
+    conditions.push(eq(gallery.published, filters.published));
+  }
+  if (filters?.type) {
+    conditions.push(eq(gallery.type, filters.type));
+  }
 
-  update: (id: string, data: any) =>
-    db
-      .update(gallery)
-      .set({ ...data, updatedAt: new Date() })
+  return await db
+    .select()
+    .from(gallery)
+    .where(conditions.length > 0 ? and(...conditions) : undefined)
+    .orderBy(desc(gallery.updatedAt)); // 👈 Newest comes first
+},
+
+  async findById(id: string) {
+    const [result] = await db
+      .select()
+      .from(gallery)
       .where(eq(gallery.id, id))
-      .returning(),
+      .limit(1);
+    return result ?? null;
+  },
 
-  delete: (id: string) =>
-  db
-    .delete(gallery)
-    .where(eq(gallery.id, id))
-    .returning(),
+  async update(id: string, data: UpdateGalleryInput) {
+    // Check if data is empty to avoid unnecessary DB calls
+    if (Object.keys(data).length === 0) {
+        return this.findById(id);
+    }
+
+    const [result] = await db
+      .update(gallery)
+      .set({
+        ...data,
+        updatedAt: new Date(), // Manually updating the timestamp
+      })
+      .where(eq(gallery.id, id))
+      .returning();
+    
+    return result ?? null;
+  },
+
+  async delete(id: string) {
+    const [result] = await db
+      .delete(gallery)
+      .where(eq(gallery.id, id))
+      .returning();
+    return result ?? null;
+  },
 };
