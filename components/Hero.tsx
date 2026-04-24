@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
+// import  AnnouncementPopup  from '@/components/AnnouncementPopup';
 
 const heroImages = [
   '/imports/WhatsApp_Image_2026-04-13_at_12.24.22.jpeg',
@@ -30,6 +31,8 @@ export function Hero() {
 
   return (
     <div className="relative h-screen w-full overflow-hidden">
+      
+
       {heroImages.map((image, index) => (
         <div
           key={index}
@@ -61,7 +64,7 @@ export function Hero() {
             href="#contact"
             className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg transition-colors"
           >
-            Enroll Now
+            Enroll Now 
           </a>
           <a
             href="#contact"

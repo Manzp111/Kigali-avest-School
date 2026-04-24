@@ -17,7 +17,7 @@ export function StickyButtons() {
         href="#contact"
         className="fixed bottom-6 left-6 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full shadow-2xl z-50 transition-all hover:scale-110"
       >
-        Enroll Now
+        Enroll Now 
       </a>
     </>
   );

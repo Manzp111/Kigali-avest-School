@@ -17,9 +17,11 @@ export async function GET(
 // PATCH (partial update)
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await context.params;
+
     const body = await req.json();
 
     const result = updateAnnouncementSchema.safeParse(body);
@@ -31,10 +33,7 @@ export async function PATCH(
       );
     }
 
-    const updated = await announcementService.update(
-      params.id,
-      result.data
-    );
+    const updated = await announcementService.update(id, result.data);
 
     return NextResponse.json({
       success: true,
