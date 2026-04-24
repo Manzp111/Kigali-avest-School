@@ -73,14 +73,14 @@ export default function GalleryPage() {
       {/* HEADER SECTION WITH LOGO */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-10 gap-6 bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
         <div className="flex items-center gap-5">
-          <div className="relative w-20 h-20 flex-shrink-0">
+          {/* <div className="relative w-20 h-20 flex-shrink-0">
             <Image 
               src="/image/logo.jpeg" // Ensure your logo is saved as logo.png in the /public folder
               alt="KHS Logo"
               fill
               className="object-contain"
             />
-          </div>
+          </div> */}
           <div>
             <h1 className="text-3xl font-black text-slate-900 tracking-tight"> K.H.S Gallery </h1>
             {/* <p className="text-slate-500 font-medium">Kigali Harvest School C</p> */}

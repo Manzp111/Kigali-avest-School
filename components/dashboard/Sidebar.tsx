@@ -57,37 +57,38 @@ export function Sidebar() {
           const isActive = pathname === item.href;
           
           return (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={`group flex items-center gap-4 px-5 py-3.5 rounded-2xl transition-all duration-300 ${
-                isActive 
-                  ? 'bg-white text-[#004795] shadow-lg shadow-black/20' 
-                  : 'text-blue-50 hover:bg-white/10 hover:translate-x-1'
-              }`}
+        <Link
+          key={item.name}
+          href={item.href}
+          className={`group flex items-center gap-4 px-5 py-3.5 rounded-2xl transition-all duration-300 ${
+            isActive 
+              ? 'bg-white text-[#004795] shadow-lg shadow-black/20' 
+              : 'text-blue-50 hover:bg-white/10 hover:translate-x-1'
+          }`}
+        >
+          <div className={`transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`}>
+            <svg 
+              className={`w-5 h-5 ${isActive ? 'text-[#004795]' : 'text-blue-300'}`}
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2.5" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
             >
-              <div className={`transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`}>
-                <svg 
-                  className={`w-5 h-5 ${isActive ? 'text-[#004795]' : 'text-blue-300'}`}
-                  viewBox="0 0 24 24" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  strokeWidth="2.5" 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round"
-                >
-                  <path d={item.icon} />
-                </svg>
-              </div>
-              <span className={`text-sm font-bold tracking-wide ${isActive ? 'opacity-100' : 'opacity-90'}`}>
-                {item.name}
-              </span>
-              
-              {/* Active Arrow Indicator */}
-              {isActive && (
-                <div className="ml-auto w-1.5 h-6  rounded-full"></div>
-              )}
-            </Link>
+              <path d={item.icon} />
+            </svg>
+          </div>
+
+          <span className={`text-sm font-bold tracking-wide ${isActive ? 'opacity-100' : 'opacity-90'}`}>
+            {item.name}
+          </span>
+          
+          {/* Active Indicator - Re-enabled and Styled with School Red */}
+          {isActive && (
+            <div className="ml-auto w-1.5 h-6  rounded-full animate-in fade-in slide-in-from-right-1 duration-500"></div>
+          )}
+        </Link>
           );
         })}
       </nav>

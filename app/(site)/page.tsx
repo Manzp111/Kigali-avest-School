@@ -7,11 +7,11 @@ import { Gallery } from '@/components/Gallery';
 import { Testimonials } from '@/components/Testimonials';
 import { Contact } from '@/components/Contact';
 import { StickyButtons } from '@/components/StickyButtons';
-import  AnnouncementPopup  from '@/components/AnnouncementPopup';
+// import  AnnouncementPopup  from '@/components/AnnouncementPopup';
 
 export default function Home() {
   return (
-    <main>
+    <main className="pt-22">
        {/* <AnnouncementPopup /> */}
       <Hero />
       <About />
