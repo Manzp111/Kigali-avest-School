@@ -11,9 +11,9 @@ export const announcementService = {
     return await announcementRepository.create(cleanedData);
   },
 
-  async getAll() {
-    return await announcementRepository.findAll();
-  },
+async getAll(filters: any) {
+  return await announcementRepository.findAll(filters);
+},
 
   async getById(id: string) {
     return await announcementRepository.findById(id);

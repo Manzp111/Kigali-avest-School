@@ -4,98 +4,134 @@ import {
   timestamp,
   boolean,
   integer,
+  pgEnum,
+  index,
 } from "drizzle-orm/pg-core";
-
 import { randomUUID } from "crypto";
-import { pgEnum } from "drizzle-orm/pg-core";
 
 
-  //  USERS
-
-export const users = pgTable("users", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => randomUUID()),
-
-  email: text("email").notNull().unique(),
-  phone: text("phone").notNull().unique(),
-  password: text("password").notNull(),
-
-  role: text("role").notNull().default("teacher"),
-
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
+// 🔐 ENUMS
 
 
-  //  ANNOUNCEMENTS
-
-export const announcements = pgTable("announcements", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => randomUUID()),
-
-  title: text("title").notNull(),
-  message: text("message").notNull(),
-
-  imageUrl: text("image_url"),
-  fileUrl: text("file_url"),
-
-  isPublished: boolean("is_published").default(false),
-
-  publishAt: timestamp("publish_at"),
-  expiresAt: timestamp("expires_at"),
-
-  priority: integer("priority").default(0),
-
-  userId: text("user_id"),
-
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
+export const userRoleEnum = pgEnum("user_role", [
+  "Headmaster",
+  "teacher",
+]);
 
 
-  //  GALLERY
+
+
+// 👤 USERS
+
+
+export const users = pgTable(
+  "users",
+  {
+    id: text("id").primaryKey().$defaultFn(() => randomUUID()),
+
+    firstName: text("first_name"),
+    lastName: text("last_name"),
+
+    email: text("email").notNull().unique(),
+    phone: text("phone").notNull().unique(),
+    password: text("password").notNull(),
+
+    role: userRoleEnum("role").default("teacher"),
+
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => ({
+    emailIdx: index("users_email_idx").on(table.email),
+  })
+);
+
+
+// 📢 ANNOUNCEMENTS
+
+
+export const announcements = pgTable(
+  "announcements",
+  {
+    id: text("id").primaryKey().$defaultFn(() => randomUUID()),
+
+    title: text("title").notNull(),
+    message: text("message").notNull(),
+
+    imageUrl: text("image_url"),
+
+    isPublished: boolean("is_published").default(false),
+    
+    userId: text("user_id").references(() => users.id, {
+      onDelete: "set null",
+    }),
+
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => ({
+    userIdx: index("announcements_user_idx").on(table.userId),
+  })
+);
+
+
+// 🖼️ GALLERY
+
 
 export const imageTypeEnum = pgEnum("image_type", [
   "background",
   "gallery",
 ]);
 
-export const gallery = pgTable("gallery", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => randomUUID()),
+export const gallery = pgTable(
+  "gallery",
+  {
+    id: text("id").primaryKey().$defaultFn(() => randomUUID()),
 
-  title: text("title").notNull(),
-  subtitle: text("subtitle"),
+    title: text("title").notNull(),
+    subtitle: text("subtitle"),
 
-  imageUrl: text("image_url").notNull(),
+    imageUrl: text("image_url").notNull(),
+    publicId: text("public_id").notNull(), // required for Cloudinary
 
-  type: imageTypeEnum("type").default("gallery"),
+    type: imageTypeEnum("type").default("gallery"),
 
-  published: boolean("published").default(false),
+    published: boolean("published").default(false),
 
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => ({
+    typeIdx: index("gallery_type_idx").on(table.type),
+  })
+);
 
-
-  //  TESTIMONIALS
+//
+// ⭐ TESTIMONIALS (FINAL SIMPLIFIED VERSION)
+//
 
 export const testimonials = pgTable("testimonials", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => randomUUID()),
+  id: text("id").primaryKey().$defaultFn(() => randomUUID()),
 
+  // visitor info
   name: text("name").notNull(),
+  email: text("email"),
+
   message: text("message").notNull(),
-  role: text("role"),
 
   imageUrl: text("image_url"),
 
+  // moderation
   isPublished: boolean("is_published").default(false),
-  priority: integer("priority").default(0),
 
   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdate(() => new Date()),
 });

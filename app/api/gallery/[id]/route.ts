@@ -2,72 +2,94 @@ import { NextRequest, NextResponse } from "next/server";
 import { GalleryService } from "@/lib/services/gallery.service";
 import { updateGallerySchema } from "@/lib/validators/gallery/gallery.validation";
 
-//  GET SINGLE ITEM
+type Params = Promise<{ id: string }>;
+
+// =====================
+// GET
+// =====================
 export async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> } // Await params in newer Next.js versions
+  { params }: { params: Params }
 ) {
+  const { id } = await params;
+
   try {
-    const { id } = await params;
     const data = await GalleryService.getById(id);
 
     if (!data) {
-      return NextResponse.json({ error: "Item not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Item not found" },
+        { status: 404 }
+      );
     }
 
     return NextResponse.json(data);
   } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return NextResponse.json(
+      { error: err.message },
+      { status: 500 }
+    );
   }
 }
 
-/**
- * PATCH: Update details or toggle published status
- */
+// =====================
+// PATCH
+// =====================
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Params }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
+
     const contentType = req.headers.get("content-type") || "";
 
     let updateData: any;
 
     if (contentType.includes("multipart/form-data")) {
       const formData = await req.formData();
+
       updateData = {
-        title: formData.get("title") as string,
-        subtitle: formData.get("subtitle") as string,
-        type: formData.get("type") as "background" | "gallery",
+        title: formData.get("title") ?? undefined,
+        subtitle: formData.get("subtitle") ?? null,
+        type: formData.get("type") ?? undefined,
         published: formData.get("published") === "true",
-        // Only include imageUrl if a new image was uploaded to Cloudinary
-        ...(formData.get("imageUrl") && { imageUrl: formData.get("imageUrl") as string }),
+        imageUrl: formData.get("imageUrl") ?? undefined,
       };
     } else {
-      // Handle simple JSON updates (like the Publish toggle)
       updateData = await req.json();
     }
 
     const result = await GalleryService.update(id, updateData);
+
     return NextResponse.json(result);
   } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return NextResponse.json(
+      { error: err.message },
+      { status: 500 }
+    );
   }
 }
 
-/**
- * DELETE: Remove image record
- */
+// =====================
+// DELETE
+// =====================
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Params }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
+
     await GalleryService.remove(id);
-    return NextResponse.json({ message: "Successfully deleted" });
+
+    return NextResponse.json({
+      message: "Successfully deleted",
+    });
   } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return NextResponse.json(
+      { error: err.message },
+      { status: 500 }
+    );
   }
 }

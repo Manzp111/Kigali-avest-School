@@ -1,12 +1,27 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { announcementService } from "@/lib/services/announcement.service";
 import { updateAnnouncementSchema } from "@/lib/validators/announcement.validator";
 
+// ✅ Next.js 16 requires params as Promise
+type Params = Promise<{ id: string }>;
+
+// ======================
+// GET
+// ======================
 export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  { params }: { params: Params }
 ) {
-  const data = await announcementService.getById(params.id);
+  const { id } = await params;
+
+  const data = await announcementService.getById(id);
+
+  if (!data) {
+    return NextResponse.json(
+      { success: false, message: "Announcement not found" },
+      { status: 404 }
+    );
+  }
 
   return NextResponse.json({
     success: true,
@@ -14,13 +29,15 @@ export async function GET(
   });
 }
 
-// PATCH (partial update)
+// ======================
+// PATCH
+// ======================
 export async function PATCH(
-  req: Request,
-  context: { params: Promise<{ id: string }> }
+  req: NextRequest,
+  { params }: { params: Params }
 ) {
   try {
-    const { id } = await context.params;
+    const { id } = await params;
 
     const body = await req.json();
 
@@ -41,23 +58,32 @@ export async function PATCH(
     });
   } catch (error: any) {
     return NextResponse.json(
-      { success: false, message: error.message },
+      { success: false, message: error.message || "Internal error" },
       { status: 500 }
     );
   }
 }
 
-
+// ======================
+// DELETE
+// ======================
 export async function DELETE(
-  req: Request,
-  { params }: { params: Promise<{ id: string }> }
+  req: NextRequest,
+  { params }: { params: Params }
 ) {
-  const { id } = await params;
+  try {
+    const { id } = await params;
 
-  await announcementService.remove(id);
+    await announcementService.remove(id);
 
-  return NextResponse.json({
-    success: true,
-    message: "Deleted successfully",
-  });
+    return NextResponse.json({
+      success: true,
+      message: "Deleted successfully",
+    });
+  } catch (error: any) {
+    return NextResponse.json(
+      { success: false, message: error.message || "Internal error" },
+      { status: 500 }
+    );
+  }
 }

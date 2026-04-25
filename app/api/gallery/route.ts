@@ -86,16 +86,20 @@ export async function POST(req: NextRequest) {
 
     //  PREPARE DATA
     // We include imageUrl here so the Zod schema can validate it in one go
-    const rawData = {
-      title: formData.get("title"),
-      subtitle: formData.get("subtitle") || undefined,
-      type: formData.get("type") || "background",
-      published: formData.get("published") === "true",
-      imageUrl: uploadResult.secure_url, // Added this before parsing
-    };
+      const rawData = {
+        title: formData.get("title"),
+        subtitle: formData.get("subtitle") || null,
+        type: formData.get("type") ?? "gallery",
+        published: formData.get("published") === "true",
+        imageUrl: uploadResult.secure_url,
+      };
 
     //  VALIDATE (This will now pass because imageUrl is present)
-    const validated = createGallerySchema.parse(rawData);
+    // const validated = createGallerySchema.parse(rawData);
+    const validated = createGallerySchema.parse({
+  ...rawData,
+  publicId: uploadResult.public_id, // ✅ ADD THIS
+});
 
     //  SAVE TO DB
     const result = await GalleryService.create(validated);

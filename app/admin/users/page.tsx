@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { apiClient } from "@/lib/utils/apiClient";
 import { 
   Mail, 
   Phone, 
@@ -29,10 +30,9 @@ export default function UsersPage() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await fetch("/api/auth/users");
-        const data = await res.json();
-        if (data.success) {
-          setUsers(data.users);
+        const res = await apiClient("/api/auth/users");
+        if (res.success) {
+          setUsers(res.users);
         }
       } catch (error) {
         console.error("Failed to fetch users", error);

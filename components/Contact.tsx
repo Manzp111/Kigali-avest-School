@@ -113,7 +113,7 @@ export function Contact() {
                     onChange={handleChange}
                     required
                     className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-[#004795] focus:bg-white outline-none transition-all"
-                    placeholder="John Doe"
+                    placeholder="Karangwa Jean"
                   />
                 </div>
                 <div>
@@ -126,7 +126,7 @@ export function Contact() {
                     onChange={handleChange}
                     required
                     className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-[#004795] focus:bg-white outline-none transition-all"
-                    placeholder="john@example.com"
+                    placeholder="kigaliharvestschool@yahoo.fr"
                   />
                 </div>
               </div>
@@ -141,7 +141,7 @@ export function Contact() {
                   onChange={handleChange}
                   required
                   className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-[#004795] focus:bg-white outline-none transition-all"
-                  placeholder="+250 788 510 446"
+                  placeholder=" +250783102133"
                 />
               </div>
 

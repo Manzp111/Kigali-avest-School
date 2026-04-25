@@ -31,5 +31,5 @@
     "**/*.mts",
     "app/layout.tsx"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules",".next","dist","components/ui"]
 }

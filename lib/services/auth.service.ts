@@ -1,70 +1,61 @@
 import { userRepository } from "@/lib/repositories/user.repository";
-import { hashPassword,comparePassword } from "@/lib/utils/hash";
+import { hashPassword, comparePassword } from "@/lib/utils/hash";
 
+class AppError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = this.constructor.name;
+  }
+}
+
+class ConflictError extends AppError {}
+class UnauthorizedError extends AppError {}
 
 export const authService = {
   async signup(data: {
     email: string;
     phone: string;
     password: string;
+    firstName: string;
+    lastName: string;
   }) {
-    // check existing user
     const existing = await userRepository.findByEmailOrPhone(
       data.email,
       data.phone
     );
 
-    if (existing.length > 0) {
-      throw new Error("User already exists");
+    if (existing) {
+      throw new ConflictError("User already exists");
     }
 
-    // hash password
     const hashed = await hashPassword(data.password);
 
-    // create user
     const user = await userRepository.createUser({
       email: data.email,
       phone: data.phone,
       password: hashed,
+      firstName: data.firstName,
+      lastName: data.lastName,
     });
 
-    // remove password
     const { password, ...safeUser } = user;
-
     return safeUser;
   },
 
   async login(data: { email: string; password: string }) {
-  
+    const user = await userRepository.findByEmail(data.email);
 
-const user = await userRepository.findByEmail(data.email);
+    if (!user) {
+      throw new UnauthorizedError("Invalid credentials");
+    }
 
-if (!user) {
-  throw new Error("Invalid credentials");
-}
+    const isMatch = await comparePassword(data.password, user.password);
 
-if (!user.password) {
-  // console.log("❌ USER PASSWORD MISSING IN DB");
-  throw new Error("Database error: password missing");
-}
+    if (!isMatch) {
+      throw new UnauthorizedError("Invalid credentials");
+    }
 
-
-const isMatch = await comparePassword(
-  data.password,
-  user.password
-);
-
-
-
-if (!isMatch) {
-  console.log("❌ PASSWORD MISMATCH DETECTED");
-  throw new Error("Invalid credentials");
-}
-
-const { password, ...safeUser } = user;
-
-
-
-return safeUser;
-}
+    const { password, ...safeUser } = user;
+    return safeUser;
+  },
 };

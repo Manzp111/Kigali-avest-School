@@ -4,46 +4,22 @@ import { loginSchema } from "@/lib/validators/auth/login.validator";
 import { authService } from "@/lib/services/auth.service";
 
 export async function POST(req: Request) {
-  console.log("🚀 LOGIN START");
-
   try {
     const body = await req.json();
-
     const result = loginSchema.safeParse(body);
 
     if (!result.success) {
-      console.log("❌ VALIDATION ERROR:", result.error.flatten());
-
       return NextResponse.json(
         { success: false, errors: result.error.flatten() },
         { status: 400 }
       );
     }
 
-    console.log("✅ VALIDATION OK");
-
+    // Wrap service call in try/catch to identify specific auth errors
     const user = await authService.login(result.data);
 
-    if (!user) {
-      return NextResponse.json(
-        { success: false, message: "Invalid credentials" },
-        { status: 401 }
-      );
-    }
-
-    const accessSecret = process.env.JWT_ACCESS_SECRET;
-    const refreshSecret = process.env.JWT_REFRESH_SECRET;
-
-    if (!accessSecret || !refreshSecret) {
-      console.log("❌ JWT secrets missing");
-
-      return NextResponse.json(
-        { success: false, message: "Server configuration error" },
-        { status: 500 }
-      );
-    }
-
-    console.log("🔐 Creating tokens...");
+    const accessSecret = process.env.JWT_ACCESS_SECRET!;
+    const refreshSecret = process.env.JWT_REFRESH_SECRET!;
 
     const accessToken = jwt.sign(
       { userId: user.id, role: user.role },
@@ -56,8 +32,6 @@ export async function POST(req: Request) {
       refreshSecret,
       { expiresIn: "7d" }
     );
-
-    console.log("🟢 TOKENS CREATED");
 
     const response = NextResponse.json({
       success: true,
@@ -74,21 +48,20 @@ export async function POST(req: Request) {
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
-      maxAge: 60 * 60 * 24 * 7, // FIXED (7 days)
+      maxAge: 7 * 24 * 60 * 60, 
     });
-
-    console.log("🍪 REFRESH TOKEN SET");
 
     return response;
   } catch (error: any) {
-    console.error("💥 LOGIN ERROR:", error);
-
+    // Check if it's an error we threw intentionally
+    const isAuthError = error.name === "UnauthorizedError" || error.status === 401;
+    
     return NextResponse.json(
-      {
-        success: false,
-        message: "Internal server error",
+      { 
+        success: false, 
+        message: isAuthError ? error.message : "Internal server error" 
       },
-      { status: 500 }
+      { status: isAuthError ? 401 : 500 }
     );
   }
 }
