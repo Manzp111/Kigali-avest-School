@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { announcementService } from "@/lib/services/announcement.service";
 import { createAnnouncementSchema } from "@/lib/validators/announcement.validator";
 import { verifyAuth } from "@/lib/utils/tokenVerify";
+import { withErrorHandler } from "@/lib/utils/db-safe";
+
 
 export async function POST(req: NextRequest) {
   try {
@@ -38,8 +40,9 @@ export async function POST(req: NextRequest) {
 
 
 
-export async function GET(req: NextRequest) {
-  try {
+
+export const GET = withErrorHandler(
+  async (req: NextRequest) => {
     const { searchParams } = new URL(req.url);
 
     const page = parseInt(searchParams.get("page") || "1");
@@ -66,10 +69,5 @@ export async function GET(req: NextRequest) {
       success: true,
       ...result,
     });
-  } catch (error: any) {
-    return NextResponse.json(
-      { success: false, message: error.message },
-      { status: 500 }
-    );
   }
-}
+);

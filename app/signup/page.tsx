@@ -85,7 +85,7 @@ export default function SignupPage() {
       }
 
       setMessage({ text: "Account created! Redirecting...", type: "success" });
-      setTimeout(() => router.push("/auth/login"), 2000);
+      setTimeout(() => router.push("/login"), 2000);
     } catch (err: any) {
       setMessage({ text: err.message, type: "error" });
     } finally {
@@ -157,13 +157,13 @@ export default function SignupPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#E31E24] text-white py-5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl hover:bg-black transition-all active:scale-[0.98] disabled:opacity-50"
+            className="w-full bg-[#E31E24] text-white py-5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl hover:bg-[#004795] transition-all active:scale-[0.98] disabled:opacity-50"
           >
             {loading ? "Processing..." : "Create Account"}
           </button>
 
           <p className="text-center text-[11px] font-bold text-slate-500 uppercase">
-            Already registered? <a href="/auth/login" className="text-[#004795] font-black hover:underline">Sign In here</a>
+            Already registered? <a href="/login" className="text-[#004795] font-black hover:underline">Sign In here</a>
           </p>
         </form>
       </div>

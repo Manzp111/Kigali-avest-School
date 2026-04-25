@@ -26,26 +26,34 @@ export default function DashboardPage() {
   const publishedCount = announcements.filter((a: any) => a.isPublished).length;
   const draftCount = announcements.filter((a: any) => !a.isPublished).length;
 
-  useEffect(() => {
+useEffect(() => {
     const fetchData = async () => {
       try {
-        const [gRes, uRes, aRes] = await Promise.all([
+        setLoading(true);
+        
+        // 1. Fetch all data in parallel using your apiClient
+        // These already return the parsed JSON objects.
+        const [gData, uData, aData] = await Promise.all([
           apiClient("/api/gallery"),
           apiClient("/api/auth/users"),
           apiClient("/api/announcement"),
         ]);
 
-        const gData = await gRes.json();
-        const uData = await uRes.json();
-        const aData = await aRes.json();
+        // 2. Set Gallery (Checking if gData is the array or contains a data key)
+        setGallery(Array.isArray(gData) ? gData : gData?.data || []); 
 
-        setGallery(gData || []); 
-        setUsers(uData.data || []); 
-        setAnnouncements(aData.data || []);
-        
-        // Syncing with your specific JSON "meta" and "total" keys
-        setUserMeta(uData.meta || { total: 0 });
-        setAnnouncementMeta({ total: aData.total || 0 });
+        // 3. Set Users and Metadata
+        // Adjusting based on your typical 'success' wrapper structure
+        if (uData) {
+          setUsers(uData.users || uData.data || []); 
+          setUserMeta(uData.meta || { total: uData.users?.length || 0 });
+        }
+
+        // 4. Set Announcements and Metadata
+        if (aData) {
+          setAnnouncements(aData.data || aData.announcements || []);
+          setAnnouncementMeta({ total: aData.total || aData.data?.length || 0 });
+        }
 
       } catch (err) {
         console.error("Dashboard Sync Error:", err);
@@ -53,6 +61,7 @@ export default function DashboardPage() {
         setLoading(false);
       }
     };
+
     fetchData();
   }, []);
 

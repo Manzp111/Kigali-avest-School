@@ -110,7 +110,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#004795] text-white py-5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl hover:bg-black transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
+          className="w-full bg-[#E31E24] text-white py-5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl hover:bg-[#004795] transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {loading ? "Authenticating..." : (
               <>
@@ -123,7 +123,7 @@ export default function LoginPage() {
           {/* FOOTER LINKS */}
           <div className="flex flex-col items-center gap-3 pt-2">
             <p className="text-[11px] font-bold text-slate-500 uppercase">
-              New here? <a href="/auth/signup" className="text-[#E31E24] font-black hover:underline">Create an Account</a>
+              New here? <a href="/signup" className="text-[#E31E24] font-black hover:underline">Create an Account</a>
             </p>
             <a href="#" className="text-[10px] font-black text-[#004795] uppercase tracking-tighter opacity-70 hover:opacity-100">
               Forgot Password?

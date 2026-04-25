@@ -1,35 +1,67 @@
 import { db } from "@/lib/db";
 import { gallery } from "@/lib/db/schema";
-import { desc, and, eq } from "drizzle-orm";
+import { desc, and, eq, sql } from "drizzle-orm";
 import {
   CreateGalleryInput,
   UpdateGalleryInput,
 } from "@/lib/types/gallery.types";
 
+type GalleryFilters = {
+  type?: "gallery" | "background";
+  published?: boolean;
+  limit?: number;
+  offset?: number;
+};
 
 export const GalleryRepository = {
   async create(data: CreateGalleryInput) {
-    // Drizzle returning() returns an array [insertedItem]
     const [result] = await db.insert(gallery).values(data).returning();
     return result;
   },
 
-async findAll(filters?: { published?: boolean; type?: "background" | "gallery" }) {
-  const conditions = [];
+  async findAll({
+    type,
+    published,
+    limit = 10,
+    offset = 0,
+  }: GalleryFilters) {
+    const conditions = [];
 
-  if (filters?.published !== undefined) {
-    conditions.push(eq(gallery.published, filters.published));
-  }
-  if (filters?.type) {
-    conditions.push(eq(gallery.type, filters.type));
-  }
+    if (type) {
+      conditions.push(eq(gallery.type, type));
+    }
 
-  return await db
-    .select()
-    .from(gallery)
-    .where(conditions.length > 0 ? and(...conditions) : undefined)
-    .orderBy(desc(gallery.updatedAt)); // 👈 Newest comes first
-},
+    if (published !== undefined) {
+      conditions.push(eq(gallery.published, published));
+    }
+
+    return db
+      .select()
+      .from(gallery)
+      .where(conditions.length ? and(...conditions) : undefined)
+      .orderBy(desc(gallery.updatedAt))
+      .limit(limit)
+      .offset(offset);
+  },
+
+  async count({ type, published }: GalleryFilters) {
+    const conditions = [];
+
+    if (type) {
+      conditions.push(eq(gallery.type, type));
+    }
+
+    if (published !== undefined) {
+      conditions.push(eq(gallery.published, published));
+    }
+
+    const result = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(gallery)
+      .where(conditions.length ? and(...conditions) : undefined);
+
+    return result[0]?.count || 0;
+  },
 
   async findById(id: string) {
     const [result] = await db
@@ -37,24 +69,24 @@ async findAll(filters?: { published?: boolean; type?: "background" | "gallery" }
       .from(gallery)
       .where(eq(gallery.id, id))
       .limit(1);
+
     return result ?? null;
   },
 
   async update(id: string, data: UpdateGalleryInput) {
-    // Check if data is empty to avoid unnecessary DB calls
     if (Object.keys(data).length === 0) {
-        return this.findById(id);
+      return this.findById(id);
     }
 
     const [result] = await db
       .update(gallery)
       .set({
         ...data,
-        updatedAt: new Date(), // Manually updating the timestamp
+        updatedAt: new Date(),
       })
       .where(eq(gallery.id, id))
       .returning();
-    
+
     return result ?? null;
   },
 
@@ -63,6 +95,7 @@ async findAll(filters?: { published?: boolean; type?: "background" | "gallery" }
       .delete(gallery)
       .where(eq(gallery.id, id))
       .returning();
+
     return result ?? null;
   },
 };

@@ -15,24 +15,28 @@ export default function Hero() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const loadBackgrounds = async () => {
-      try {
-        const res = await fetch("/api/gallery");
-        const data: GalleryImage[] = await res.json();
-        const backgrounds = data
-          .filter((img) => img.type === "background" && img.published)
-          .map((img) => img.imageUrl);
+useEffect(() => {
+  const loadBackgrounds = async () => {
+    try {
+      const res = await fetch("/api/gallery?type=background&published=true");
+      const result = await res.json();
 
-        setHeroImages(backgrounds.length > 0 ? backgrounds : ["/imports/khs.jpg"]);
-      } catch (error) {
-        setHeroImages(["/imports/khs.jpg"]);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadBackgrounds();
-  }, []);
+      const backgrounds = (result.data || []).map(
+        (img: GalleryImage) => img.imageUrl
+      );
+
+      setHeroImages(
+        backgrounds.length > 0 ? backgrounds : ["/imports/khs.jpg"]
+      );
+    } catch (error) {
+      setHeroImages(["/imports/khs.jpg"]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  loadBackgrounds();
+}, []);
 
   useEffect(() => {
     if (heroImages.length <= 1) return;
@@ -46,27 +50,30 @@ export default function Hero() {
     <section className="relative h-screen min-h-[700px] overflow-hidden bg-[#004795]">
       
       {/* Background Images Layer */}
-      {heroImages.map((image, index) => (
-        <div
-          key={index}
-          className={`absolute inset-0 z-0 transition-opacity duration-[2000ms] ease-in-out ${
-            currentImageIndex === index ? "opacity-100" : "opacity-0"
-          }`}
-        >
-          <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ 
-              backgroundImage: `url('${image}')`,
-              transform: currentImageIndex === index ? 'scale(1.1)' : 'scale(1)',
-              transition: 'transform 10s linear'
-            }}
-          >
-            {/* Themed Overlays */}
-            <div className="absolute inset-0 bg-[#004795]/40 mix-blend-multiply"></div>
-            <div className="absolute inset-0 bg-gradient-to-r from-[#004795]/95 via-[#004795]/50 to-transparent"></div>
-          </div>
-        </div>
-      ))}
+    {/* Background Images Layer */}
+{heroImages.map((image, index) => (
+  <div
+    key={index}
+    className={`absolute inset-0 z-0 transition-opacity duration-[2000ms] ease-in-out ${
+      currentImageIndex === index ? "opacity-100" : "opacity-0"
+    }`}
+  >
+    {/* We use an <img> tag with object-cover instead of a div with background-image.
+        This handles aspect ratios much better across mobile and desktop.
+    */}
+    <img
+      src={image}
+      alt="School background"
+      className={`absolute inset-0 w-full h-full object-cover object-center transition-transform duration-[6000ms] ease-out ${
+        currentImageIndex === index ? "scale-105" : "scale-100"
+      }`}
+    />
+
+    {/* Themed Overlays - Adjusted for better readability */}
+    <div className="absolute inset-0 bg-[#004795]/50 mix-blend-multiply"></div>
+    <div className="absolute inset-0 bg-gradient-to-r from-[#004795]/90 via-[#004795]/40 to-transparent"></div>
+  </div>
+))}
 
       {/* Content Layer - Controlled by max-w-7xl for perfect Zoom 30%-100% */}
       <div className="relative z-20 max-w-7xl mx-auto px-6 h-full flex flex-col justify-center pb-24 md:pb-32">

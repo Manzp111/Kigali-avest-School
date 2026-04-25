@@ -1,28 +1,62 @@
-// gallery.service.ts
 import { GalleryRepository } from "@/lib/repositories/gallery.repository";
 import {
   CreateGalleryInput,
   UpdateGalleryInput,
 } from "@/lib/types/gallery.types";
 
+type GetGalleryFilters = {
+  type?: "gallery" | "background";
+  published?: boolean;
+  page?: number;
+  limit?: number;
+};
+
 export const GalleryService = {
-  // ✅ Create: Returns the single created object
+  // Create
   async create(data: CreateGalleryInput) {
-    return await GalleryRepository.create(data);
+    return GalleryRepository.create(data);
   },
 
-  // ✅ Get All: Now correctly accepts and passes filters
-  async getAll(filters?: { type?: "background" | "gallery"; published?: boolean }) {
-    return await GalleryRepository.findAll(filters);
+  // Get All (with pagination)
+  async getAll({
+    type,
+    published,
+    page = 1,
+    limit = 10,
+  }: GetGalleryFilters) {
+    const safePage = Math.max(page, 1);
+    const safeLimit = Math.min(Math.max(limit, 1), 50);
+    const offset = (safePage - 1) * safeLimit;
+
+    const data = await GalleryRepository.findAll({
+      type,
+      published,
+      limit: safeLimit,
+      offset,
+    });
+
+    const total = await GalleryRepository.count({
+      type,
+      published,
+    });
+
+    return {
+      data,
+      pagination: {
+        page: safePage,
+        limit: safeLimit,
+        total,
+        totalPages: Math.ceil(total / safeLimit),
+      },
+    };
   },
 
-  // ✅ Get By ID: Returns the object or null
+  // Get by ID
   async getById(id: string) {
-    const result = await GalleryRepository.findById(id);
-    return result;
+    return GalleryRepository.findById(id);
   },
 
-  // ✅ Update: Handles the "not found" case for single objects
+  // Update
   async update(id: string, data: UpdateGalleryInput) {
     const result = await GalleryRepository.update(id, data);
 
@@ -33,7 +67,7 @@ export const GalleryService = {
     return result;
   },
 
-  // ✅ Remove: Handles the "not found" case for single objects
+  // Delete
   async remove(id: string) {
     const result = await GalleryRepository.delete(id);
 

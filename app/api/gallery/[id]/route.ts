@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { GalleryService } from "@/lib/services/gallery.service";
 import { updateGallerySchema } from "@/lib/validators/gallery/gallery.validation";
 import { verifyAuth } from "@/lib/utils/tokenVerify";
+import { success } from "zod";
 
 type Params = Promise<{ id: string }>;
 
@@ -30,7 +31,15 @@ if (!auth.success) {
       );
     }
 
-    return NextResponse.json(data);
+    return NextResponse.json(
+      {
+        success:true,
+        message:"data retrived successfull",
+        data:data
+      }
+
+      
+      );
   } catch (err: any) {
     return NextResponse.json(
       { error: err.message },
@@ -74,7 +83,14 @@ export async function PATCH(
 
     const result = await GalleryService.update(id, updateData);
 
-    return NextResponse.json(result);
+    return NextResponse.json(
+         {
+          success:true,
+          message:"updated successfull",
+          data:result
+          
+         }
+    );
   } catch (err: any) {
     return NextResponse.json(
       { error: err.message },
@@ -102,7 +118,9 @@ export async function DELETE(
     await GalleryService.remove(id);
 
     return NextResponse.json({
+      success: true,
       message: "Successfully deleted",
+
     });
   } catch (err: any) {
     return NextResponse.json(
