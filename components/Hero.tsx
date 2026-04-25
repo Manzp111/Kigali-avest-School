@@ -72,8 +72,8 @@ export default function Hero() {
       <div className="relative z-20 max-w-7xl mx-auto px-6 h-full flex flex-col justify-center pb-24 md:pb-32">
         <div className="max-w-3xl text-white">
           
-          <div className="inline-block bg-amber-400 text-[#004795] px-5 py-2 rounded-full font-black text-xs mb-6 uppercase tracking-[0.2em] animate-bounce shadow-xl">
-            Admissions Open 2026/27
+          <div className="inline-block  text-[#004795] px-5 py-2 rounded-full font-black text-xs mb-6 uppercase tracking-[0.2em] animate-bounce shadow-xl">
+            {/* Admissions Open 2026/27 */}
           </div>
           
           <h2 className="text-5xl md:text-8xl font-black mb-6 leading-[1.1] tracking-tight">

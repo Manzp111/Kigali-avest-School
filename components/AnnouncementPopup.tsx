@@ -152,6 +152,9 @@ const styles: any = {
     fontSize: "13px",
     opacity: 0.95,
     whiteSpace: "nowrap",
+    fontWeight: "500",
+    
+    
   },
   counter: {
     fontSize: "10px",

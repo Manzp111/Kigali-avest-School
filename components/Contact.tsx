@@ -1,6 +1,6 @@
 "use client";
 import { useState } from 'react';
-
+import { Phone, MapPin, Clock, Send, Mail } from 'lucide-react';
 
 export function Contact() {
   const [formData, setFormData] = useState({
@@ -21,65 +21,75 @@ export function Contact() {
   };
 
   return (
-    <section id="contact" className="py-20 px-4 bg-gradient-to-b from-blue-50 to-white">
+    <section id="contact" className="py-24 px-4 bg-slate-50">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl text-blue-900 mb-4">Get in Touch</h2>
-          <div className="w-24 h-1 bg-green-500 mx-auto mb-4"></div>
-          <p className="text-xl text-gray-700">Start Enrollment Today</p>
+        {/* Header Section */}
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-black text-[#004795] mb-4 uppercase tracking-tight">
+            Get in Touch
+          </h2>
+          <div className="flex justify-center gap-2 mb-6">
+            <div className="w-20 h-2 bg-[#E31E24] rounded-full"></div>
+            <div className="w-8 h-2 bg-[#004795] rounded-full"></div>
+          </div>
+          <p className="text-xl text-slate-600 font-medium">Start Your Child's Journey Today</p>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-12">
-          <div>
-            <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
-              <h3 className="text-2xl text-blue-900 mb-6">Contact Information</h3>
+          {/* Contact Information Side */}
+          <div className="space-y-8">
+            <div className="bg-white rounded-3xl shadow-sm border border-slate-100 p-10">
+              <h3 className="text-2xl font-bold text-[#004795] mb-8 flex items-center gap-3">
+                Contact Information
+              </h3>
 
-              <div className="space-y-4">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
-                    <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-                    </svg>
+              <div className="space-y-8">
+                {/* Phone */}
+                <div className="flex items-start gap-5 group">
+                  <div className="w-14 h-14 bg-[#004795]/5 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:bg-[#004795] transition-colors duration-300">
+                    <Phone className="w-6 h-6 text-[#004795] group-hover:text-white" />
                   </div>
                   <div>
-                    <h4 className="text-blue-900 mb-1">Phone</h4>
-                    <a href="tel:+250788510446" className="text-gray-700 hover:text-green-600">+250 788 510 446</a>
+                    <h4 className="text-[#004795] font-bold text-lg mb-1">Phone</h4>
+                    <a href="tel:+250788510446" className="text-slate-600 hover:text-[#E31E24] font-medium transition-colors">
+                      +250 788 510 446
+                    </a>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-yellow-600 rounded-full flex items-center justify-center flex-shrink-0">
-                    <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                    </svg>
+                {/* Location */}
+                <div className="flex items-start gap-5 group">
+                  <div className="w-14 h-14 bg-[#E31E24]/5 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:bg-[#E31E24] transition-colors duration-300">
+                    <MapPin className="w-6 h-6 text-[#E31E24] group-hover:text-white" />
                   </div>
                   <div>
-                    <h4 className="text-blue-900 mb-1">Location</h4>
-                    <p className="text-gray-700">KG 653 St, Kigali, Rwanda</p>
+                    <h4 className="text-[#004795] font-bold text-lg mb-1">Location</h4>
+                    <p className="text-slate-600 font-medium">KG 653 St, Kigali, Rwanda</p>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
-                    <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-                    </svg>
+                {/* Hours */}
+                <div className="flex items-start gap-5 group">
+                  <div className="w-14 h-14 bg-[#004795]/5 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:bg-[#004795] transition-colors duration-300">
+                    <Clock className="w-6 h-6 text-[#004795] group-hover:text-white" />
                   </div>
                   <div>
-                    <h4 className="text-blue-900 mb-1">School Hours</h4>
-                    <p className="text-gray-700">Mon - Fri: 8:00 AM - 5:00 PM</p>
-                    <p className="text-gray-700">Saturday: Closed</p>
-                    <p className="text-gray-700">Sunday: Closed</p>
+                    <h4 className="text-[#004795] font-bold text-lg mb-1">School Hours</h4>
+                    <div className="text-slate-600 font-medium space-y-1">
+                      <p>Mon - Fri: 8:00 AM - 5:00 PM</p>
+                      <p className="text-[#E31E24]">Sat - Sun: Closed</p>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+            {/* Map Placeholder */}
+            <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden h-[300px]">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3987.5145!2d30.0619!3d-1.9536!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMcKwNTcnMTMuMCJTIDMwwrAwMycwNi44IkU!5e0!3m2!1sen!2srw!4v1234567890"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3987.503463836173!2d30.0891!3d-1.9441!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMcKwNTYnMzguOCJTIDMwwrAwNScyMC44IkU!5e0!3m2!1sen!2srw!4v1620000000000!5m2!1sen!2srw"
                 width="100%"
-                height="300"
+                height="100%"
                 style={{ border: 0 }}
                 allowFullScreen
                 loading="lazy"
@@ -88,39 +98,41 @@ export function Contact() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-lg p-8">
-            <h3 className="text-2xl text-blue-900 mb-6">Send us a Message</h3>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label htmlFor="name" className="block text-gray-700 mb-2">Full Name *</label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none"
-                  placeholder="Your full name"
-                />
+          {/* Form Side */}
+          <div className="bg-white rounded-3xl shadow-xl border border-slate-100 p-10">
+            <h3 className="text-2xl font-bold text-[#004795] mb-8">Send us a Message</h3>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="name" className="block text-[#004795] font-bold mb-2 text-sm uppercase tracking-wider">Full Name *</label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-[#004795] focus:bg-white outline-none transition-all"
+                    placeholder="John Doe"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="email" className="block text-[#004795] font-bold mb-2 text-sm uppercase tracking-wider">Email Address *</label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-[#004795] focus:bg-white outline-none transition-all"
+                    placeholder="john@example.com"
+                  />
+                </div>
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-gray-700 mb-2">Email *</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none"
-                  placeholder="your.email@example.com"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="phone" className="block text-gray-700 mb-2">Phone Number *</label>
+                <label htmlFor="phone" className="block text-[#004795] font-bold mb-2 text-sm uppercase tracking-wider">Phone Number *</label>
                 <input
                   type="tel"
                   id="phone"
@@ -128,30 +140,31 @@ export function Contact() {
                   value={formData.phone}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none"
-                  placeholder="+250 XXX XXX XXX"
+                  className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-[#004795] focus:bg-white outline-none transition-all"
+                  placeholder="+250 788 510 446"
                 />
               </div>
 
               <div>
-                <label htmlFor="message" className="block text-gray-700 mb-2">Message *</label>
+                <label htmlFor="message" className="block text-[#004795] font-bold mb-2 text-sm uppercase tracking-wider">Your Message *</label>
                 <textarea
                   id="message"
                   name="message"
                   value={formData.message}
                   onChange={handleChange}
                   required
-                  rows={5}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none resize-none"
-                  placeholder="Tell us about your child and what you're looking for..."
+                  rows={4}
+                  className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-[#004795] focus:bg-white outline-none transition-all resize-none"
+                  placeholder="Tell us about your child's needs..."
                 ></textarea>
               </div>
 
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-blue-600 to-green-600 text-white py-4 rounded-lg hover:from-blue-700 hover:to-green-700 transition-all"
+                className="w-full bg-[#004795] hover:bg-[#003366] text-white py-5 rounded-2xl font-black text-lg shadow-lg shadow-blue-900/20 transition-all flex items-center justify-center gap-3 group"
               >
                 Send Message
+                <Send className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
               </button>
             </form>
           </div>
