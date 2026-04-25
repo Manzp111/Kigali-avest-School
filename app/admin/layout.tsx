@@ -1,8 +1,8 @@
-// app/dashboard/layout.tsx
 "use client";
+
 import { Navbar } from "@/components/dashboard/Navbar";
 import { Sidebar } from "@/components/dashboard/Sidebar";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function DashboardLayout({
@@ -10,15 +10,21 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-   const router = useRouter();
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
 
-useEffect(() => {
-  const token = localStorage.getItem("accessToken");
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
 
-  if (!token) {
-    router.replace("/login");
-  }
-}, [router]);
+    if (!token) {
+      router.replace("/login");
+    } else {
+      setLoading(false);
+    }
+  }, [router]);
+
+  if (loading) return null; // or spinner
+
   return (
     <div className="flex h-screen overflow-hidden bg-slate-50">
       <Sidebar />
@@ -27,14 +33,7 @@ useEffect(() => {
         <Navbar />
 
         <main className="flex-1 overflow-y-auto relative custom-scrollbar">
-          {/* Content changes here based on the URL */}
-          <div className="p-6">
-            {children}
-          </div>
-
-          <div className="absolute top-0 right-0 -z-10 p-20 opacity-20 pointer-events-none">
-            <div className="w-96 h-96 bg-blue-200 rounded-full blur-3xl"></div>
-          </div>
+          <div className="p-6">{children}</div>
         </main>
       </div>
     </div>

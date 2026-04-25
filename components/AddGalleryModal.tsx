@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 type GalleryItem = {
   id: string;
@@ -26,39 +27,47 @@ export default function AddGalleryModal({ onClose, onSuccess, initialData }: Pro
   const [loading, setLoading] = useState(false);
 
   const isEditing = !!initialData;
+  const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+ const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setLoading(true);
 
-    try {
-      const formData = new FormData();
-      formData.append("title", title);
-      formData.append("subtitle", subtitle);
-      formData.append("type", type);
-      formData.append("published", String(published));
-      if (image) formData.append("image", image);
+  try {
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("subtitle", subtitle);
+    formData.append("type", type);
+    formData.append("published", String(published));
+    if (image) formData.append("image", image);
 
-      const url = isEditing ? `/api/gallery/${initialData.id}` : "/api/gallery";
-      const method = isEditing ? "PATCH" : "POST";
+    const url = isEditing
+      ? `/api/gallery/${initialData.id}`
+      : "/api/gallery";
 
-      const res = await fetch(url, {
-        method,
-        // If editing without a new image, you could send JSON instead, 
-        // but FormData works for both scenarios if your API handles it.
-        body: image ? formData : JSON.stringify({ title, subtitle, type, published }),
-        headers: image ? {} : { "Content-Type": "application/json" },
-      });
+    const method = isEditing ? "PATCH" : "POST";
 
-      if (!res.ok) throw new Error("Failed to save gallery item");
+    const res = await fetch(url, {
+      method,
+      body: image
+        ? formData
+        : JSON.stringify({ title, subtitle, type, published }),
+      headers: image ? {} : { "Content-Type": "application/json" },
+    });
 
-      onSuccess();
-    } catch (err: any) {
-      alert(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+    if (!res.ok) throw new Error("Failed to save gallery item");
+
+    // ✅ success redirect
+    router.push("/admin/gallery");
+
+    // optional callback
+    onSuccess();
+  } catch (err: any) {
+    alert(err.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-[60] p-4">
