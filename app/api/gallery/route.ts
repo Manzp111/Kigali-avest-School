@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { GalleryService } from "@/lib/services/gallery.service";
 import { createGallerySchema } from "@/lib/validators/gallery/gallery.validation";
 import { v2 as cloudinary } from "cloudinary";
+import { verifyAuth } from "@/lib/utils/tokenVerify";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME!,
@@ -48,6 +49,12 @@ export async function GET(req: NextRequest) {
 //  CREATE
 export async function POST(req: NextRequest) {
   try {
+
+    const auth = await verifyAuth(req);
+
+  if (!auth.success) {
+    return auth.response;
+  }
     const formData = await req.formData();
     const file = formData.get("image") as File | null;
 

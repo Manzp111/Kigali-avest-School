@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GalleryService } from "@/lib/services/gallery.service";
 import { updateGallerySchema } from "@/lib/validators/gallery/gallery.validation";
+import { verifyAuth } from "@/lib/utils/tokenVerify";
 
 type Params = Promise<{ id: string }>;
 
@@ -14,6 +15,12 @@ export async function GET(
   const { id } = await params;
 
   try {
+
+const auth = await verifyAuth(req);
+
+if (!auth.success) {
+  return auth.response;
+}
     const data = await GalleryService.getById(id);
 
     if (!data) {
@@ -40,6 +47,11 @@ export async function PATCH(
   { params }: { params: Params }
 ) {
   try {
+    const auth = await verifyAuth(req);
+
+    if (!auth.success) {
+      return auth.response;
+    }
     const { id } = await params;
 
     const contentType = req.headers.get("content-type") || "";
@@ -80,6 +92,12 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
+
+    const auth = await verifyAuth(req);
+
+    if (!auth.success) {
+      return auth.response;
+    }
 
     await GalleryService.remove(id);
 

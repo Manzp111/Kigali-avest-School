@@ -1,9 +1,16 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { announcementService } from "@/lib/services/announcement.service";
 import { createAnnouncementSchema } from "@/lib/validators/announcement.validator";
+import { verifyAuth } from "@/lib/utils/tokenVerify";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
+    const auth = await verifyAuth(req);
+
+    if (!auth.success) {
+      return auth.response;
+    }
+      
     const body = await req.json();
 
     const result = createAnnouncementSchema.safeParse(body);
@@ -31,7 +38,7 @@ export async function POST(req: Request) {
 
 
 
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
 

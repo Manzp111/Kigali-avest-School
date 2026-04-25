@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { announcementService } from "@/lib/services/announcement.service";
 import { updateAnnouncementSchema } from "@/lib/validators/announcement.validator";
+import { verifyAuth } from "@/lib/utils/tokenVerify";
 
 // ✅ Next.js 16 requires params as Promise
 type Params = Promise<{ id: string }>;
@@ -13,7 +14,12 @@ export async function GET(
   { params }: { params: Params }
 ) {
   const { id } = await params;
+  try {
+  const auth = await verifyAuth(req);
 
+if (!auth.success) {
+  return auth.response;
+}
   const data = await announcementService.getById(id);
 
   if (!data) {
@@ -27,6 +33,12 @@ export async function GET(
     success: true,
     announcement: data,
   });
+  } catch (error: any) {
+    return NextResponse.json(
+      { success: false, message: error.message || "Internal Server Error" },
+      { status: 500 }
+    );
+  }
 }
 
 // ======================
@@ -37,6 +49,11 @@ export async function PATCH(
   { params }: { params: Params }
 ) {
   try {
+    const auth = await verifyAuth(req);
+
+    if (!auth.success) {
+      return auth.response;
+    }
     const { id } = await params;
 
     const body = await req.json();
@@ -73,6 +90,12 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
+
+    const auth = await verifyAuth(req);
+
+    if (!auth.success) {
+      return auth.response;
+    }
 
     await announcementService.remove(id);
 

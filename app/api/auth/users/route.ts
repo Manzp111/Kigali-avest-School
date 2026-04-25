@@ -1,9 +1,17 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { userService } from "@/lib/services/user.service";
 import type { UserRole } from "@/lib/repositories/user.repository";
+import { verifyAuth } from "@/lib/utils/tokenVerify";
 
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   try {
+    // 🔐 AUTH CHECK (ONLY ONE LINE YOU NEED)
+    const auth = await verifyAuth(req);
+
+    if (!auth.success) {
+      return auth.response;
+    }
+
     const { searchParams } = new URL(req.url);
 
     // 📄 pagination
@@ -12,20 +20,16 @@ export async function GET(req: Request) {
 
     // 🔎 filters
     const email = searchParams.get("email");
-
     const role = searchParams.get("role") as UserRole | null;
 
-    // 👤 optional auth (from middleware)
-    const userHeader = req.headers.get("x-user");
-    const user = userHeader ? JSON.parse(userHeader) : null;
+    // 👤 trusted user (from token)
+    const user = auth.payload;
 
-    
-
-    //  protect route (enable when ready)
-    // if (!user || user.role !== "admin") {
+    // 🔐 OPTIONAL ROLE PROTECTION
+    // if (user.role !== "admin") {
     //   return NextResponse.json(
-    //     { success: false, message: "Unauthorized" },
-    //     { status: 401 }
+    //     { success: false, message: "Forbidden" },
+    //     { status: 403 }
     //   );
     // }
 
@@ -35,8 +39,6 @@ export async function GET(req: Request) {
       email,
       role,
     });
-
-    // const result = await userService.getAllUsers();
 
     return NextResponse.json({
       success: true,
