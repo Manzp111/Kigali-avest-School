@@ -1,5 +1,5 @@
 {
-  "id": "2eea174a-1ce0-453a-825c-a7e1b9f31437",
+  "id": "7a6bdcac-d343-48c3-9a03-4982d9778fe6",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -297,6 +297,13 @@
           "primaryKey": false,
           "notNull": false,
           "default": "'teacher'"
+        },
+        "is_verified": {
+          "name": "is_verified",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
         },
         "created_at": {
           "name": "created_at",

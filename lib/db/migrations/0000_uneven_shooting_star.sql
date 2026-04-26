@@ -42,6 +42,7 @@ CREATE TABLE "users" (
 	"phone" text NOT NULL,
 	"password" text NOT NULL,
 	"role" "user_role" DEFAULT 'teacher',
+	"is_verified" boolean DEFAULT false NOT NULL,
 	"created_at" timestamp DEFAULT now(),
 	"updated_at" timestamp DEFAULT now(),
 	CONSTRAINT "users_email_unique" UNIQUE("email"),

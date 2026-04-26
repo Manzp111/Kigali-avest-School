@@ -53,7 +53,7 @@ export default function AnnouncementsPage() {
     setLoading(true);
     try {
       // Assuming your backend handles ?page and ?status
-      const res = await apiClient(`/api/announcement?page=${page}&limit=2&status=${filter}`);
+      const res = await apiClient(`/api/announcement?page=${page}&limit=15&status=${filter}`);
       if (res.success) {
         setData(res.data ?? []);
         setTotalPages(res.meta?.totalPages || 1);

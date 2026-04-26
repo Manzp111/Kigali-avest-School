@@ -21,7 +21,7 @@ export default function LoginPage() {
     if (error) setError(""); // Clear error when typing
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
@@ -40,8 +40,14 @@ export default function LoginPage() {
         return;
       }
 
-      // Store Access Token
+      // 1. Store Access Token for API calls
       localStorage.setItem("accessToken", data.accessToken);
+
+      // 2. Store User Profile for UI tracking (Welcome messages, Role checks)
+      if (data.user) {
+        localStorage.setItem("user", JSON.stringify(data.user));
+      }
+
       router.push("/admin");
     } catch (err) {
       setError("Unable to connect to the server");
@@ -49,6 +55,7 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-slate-100 p-6 font-sans">

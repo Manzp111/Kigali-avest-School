@@ -15,15 +15,26 @@ export default function DashboardLayout({
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
+    const user = localStorage.getItem("user");
 
-    if (!token) {
+    // Strict session check: both token and user profile must exist
+    if (!token || !user) {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("user");
       router.replace("/login");
     } else {
       setLoading(false);
     }
   }, [router]);
 
-  if (loading) return null; // or spinner
+  // Prevent flickering of protected content before check is complete
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-slate-50">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#E31E24]"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen overflow-hidden bg-slate-50">
