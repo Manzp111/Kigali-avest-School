@@ -28,9 +28,9 @@ export const userRepository = {
     return result[0];
   },
 
-  //
-  // 🔍 FIND BY EMAIL OR PHONE
-  //
+  
+  //  FIND BY EMAIL OR PHONE
+  
   async findByEmailOrPhone(email: string, phone: string) {
     const result = await db
       .select()

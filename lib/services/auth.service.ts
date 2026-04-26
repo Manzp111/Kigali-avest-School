@@ -55,6 +55,10 @@ export const authService = {
       throw new UnauthorizedError("Invalid credentials");
     }
 
+    if (!user.isVerified) {
+    throw new UnauthorizedError("Account not verified. Please contact the HeadTeacher to verify your account.");
+  }
+
     const { password, ...safeUser } = user;
     return safeUser;
   },

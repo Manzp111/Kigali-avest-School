@@ -8,8 +8,7 @@ export function Header() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const scrollToSection = (id: string) => {
-    // If we are not on the homepage, navigate home first then scroll
+ const scrollToSection = (id: string) => {
     if (pathname !== '/') {
       router.push(`/#${id}`);
       return;
@@ -17,7 +16,7 @@ export function Header() {
 
     const element = document.getElementById(id);
     if (element) {
-      const headerOffset = 100; // Increased offset to account for Announcement bar
+      const headerOffset = 130; // 80px (header) + 50px (announcement)
       const elementPosition = element.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
 
@@ -25,13 +24,14 @@ export function Header() {
         top: offsetPosition,
         behavior: "smooth"
       });
+
+      window.history.pushState(null, "", "/");
     }
   };
 
   return (
-    <header className="fixed top-0 w-full z-50 bg-white shadow-sm flex flex-col">
+    <header className="fixed top-0 w-full z-50 bg-white shadow-sm">
       <AnnouncementPopup />
-    <div className="w-full bg-white">
       <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between h-20">        
         
         {/* LOGO & BRANDING - Wrapped in Link for better navigation */}
@@ -84,7 +84,6 @@ export function Header() {
           </div>
         </div>
       </div>
-    </div>
     </header>
   );
 }
