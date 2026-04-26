@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { X, Send, Save, AlertCircle, Link as LinkIcon, Image as ImageIcon } from "lucide-react";
 import { Announcement } from "@/lib/types/announcement.types";
+import { apiClient } from "@/lib/utils/apiClient"; 
 
 type AnnouncementFormData = {
   title: string;
@@ -36,6 +37,7 @@ export default function AnnouncementModal({ open, onClose, onSuccess, announceme
   const [errors, setErrors] = useState<Partial<Record<keyof AnnouncementFormData, string>>>({});
   const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState("");
+  
 
   useEffect(() => {
     if (open) {
@@ -71,44 +73,53 @@ export default function AnnouncementModal({ open, onClose, onSuccess, announceme
     setErrors(e);
     return Object.keys(e).length === 0;
   }
+async function handleSubmit() {
+  if (!validate()) return;
 
-  async function handleSubmit() {
-    if (!validate()) return;
-    setLoading(true);
-    setServerError("");
+  setLoading(true);
+  setServerError("");
 
-    const payload = {
-      title: form.title.trim(),
-      message: form.message.trim(),
-      imageUrl: form.imageUrl.trim() || null,
-      isPublished: form.isPublished,
-      userId: userId, 
-    };
+  const payload = {
+    title: form.title.trim(),
+    message: form.message.trim(),
+    imageUrl: form.imageUrl.trim() || null,
+    isPublished: form.isPublished,
+    userId,
+  };
 
-    try {
-      const url = isEdit ? `/api/announcement/${announcement?.id}` : "/api/announcement";
-      const method = isEdit ? "PATCH" : "POST";
-      
-      const res = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+  try {
+    const url = isEdit
+      ? `/api/announcement/${announcement?.id}`
+      : "/api/announcement";
 
-      const data = await res.json();
+    const method = isEdit ? "PATCH" : "POST";
 
-      if (!res.ok) {
-        throw new Error(data.message || "Failed to save announcement");
-      }
-      
-      onSuccess();
-      onClose();
-    } catch (err: any) {
-      setServerError(err.message);
-    } finally {
-      setLoading(false);
+    const res = await apiClient(url, {
+      method,
+      body: JSON.stringify(payload),
+    });
+
+    // 🔥 SAFE CHECK
+    if (!res || !res.success) {
+      const errors = res?.errors?.fieldErrors;
+
+      const message = errors
+        ? Object.values(errors).flat().join(", ")
+        : res?.message || "Failed to save announcement";
+
+      throw new Error(message);
     }
+
+    onSuccess();
+    onClose();
+
+  } catch (err: any) {
+    console.error("Submit Error:", err);
+    setServerError(err.message || "An unexpected error occurred");
+  } finally {
+    setLoading(false);
   }
+}
 
   if (!open) return null;
 

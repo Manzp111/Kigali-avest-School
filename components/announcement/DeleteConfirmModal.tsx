@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { apiClient } from "@/lib/utils/apiClient";
 
 type Announcement = {
   id: string;
@@ -76,24 +77,30 @@ export default function DeleteConfirmModal({ open, onClose, onSuccess, announcem
     if (e.target === overlayRef.current) onClose();
   }
 
-  async function handleDelete() {
-    if (!announcement) return;
-    setLoading(true);
-    setError("");
-    try {
-      const res = await fetch(`/api/announcement/${announcement.id}`, { method: "DELETE" });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err?.message || "Failed to delete.");
-      }
-      onSuccess();
-      onClose();
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Request failed.");
-    } finally {
-      setLoading(false);
+ async function handleDelete() {
+  if (!announcement) return;
+
+  setLoading(true);
+  setError("");
+
+  try {
+    const res = await apiClient(`/api/announcement/${announcement.id}`, {
+      method: "DELETE",
+    });
+
+    if (!res?.success) {
+      throw new Error(res?.message || "Failed to delete.");
     }
+
+    onSuccess();
+    onClose();
+
+  } catch (err: unknown) {
+    setError(err instanceof Error ? err.message : "Request failed.");
+  } finally {
+    setLoading(false);
   }
+}
 
   if (!open || !announcement) return null;
 

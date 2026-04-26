@@ -1,7 +1,17 @@
 import { db } from "@/lib/db";
 import { announcements } from "@/lib/db/schema";
-import { eq,sql,and,asc,desc } from "drizzle-orm";
+import { eq, sql, and, asc, desc } from "drizzle-orm";
 import { randomUUID } from "crypto";
+
+export type AnnouncementFilters = {
+  page: number;
+  limit: number;
+  isPublished?: boolean;
+  userId?: string;
+  search?: string;
+  sortBy?: "createdAt" | "updatedAt";
+  order?: "asc" | "desc";
+};
 
 export const announcementRepository = {
   async create(data: any) {
@@ -16,67 +26,58 @@ export const announcementRepository = {
     return result[0];
   },
 
-async findAll(filters: {
-  page: number;
-  limit: number;
-  isPublished?: boolean;
-  userId?: string | null;
-  search?: string | null;
-  sortBy?: "createdAt" | "updatedAt";
-  order?: "asc" | "desc";
-}) {
-  const {
-    page,
-    limit,
-    isPublished,
-    userId,
-    search,
-    sortBy = "createdAt",
-    order = "desc",
-  } = filters;
-
-  const offset = (page - 1) * limit;
-
-  const conditions = [];
-
-  if (isPublished !== undefined) {
-    conditions.push(eq(announcements.isPublished, isPublished));
-  }
-
-  if (userId) {
-    conditions.push(eq(announcements.userId, userId));
-  }
-
-  const query = db
-    .select()
-    .from(announcements)
-    .where(conditions.length ? and(...conditions) : undefined);
-
-  // sorting safe
-  const sortedQuery =
-    order === "asc"
-      ? query.orderBy(asc(announcements[sortBy]))
-      : query.orderBy(desc(announcements[sortBy]));
-
-  const data = await sortedQuery.limit(limit).offset(offset);
-
-  const totalResult = await db
-    .select({ count: sql<number>`count(*)` })
-    .from(announcements)
-    .where(conditions.length ? and(...conditions) : undefined);
-
-  const total = Number(totalResult[0].count ?? 0);
-
-  return {
-    data,
-    meta: {
-      total,
+  async findAll(filters: AnnouncementFilters) {
+    const {
       page,
       limit,
-      totalPages: Math.ceil(total / limit),
-    },
-  };
-},
+      isPublished,
+      userId,
+      search,
+      sortBy = "createdAt",
+      order = "desc",
+    } = filters;
+
+    const offset = (page - 1) * limit;
+
+    const conditions = [];
+
+    if (isPublished !== undefined) {
+      conditions.push(eq(announcements.isPublished, isPublished));
+    }
+
+    if (userId) {
+      conditions.push(eq(announcements.userId, userId));
+    }
+
+    const baseQuery = db
+      .select()
+      .from(announcements)
+      .where(conditions.length ? and(...conditions) : undefined);
+
+    const sortedQuery =
+      order === "asc"
+        ? baseQuery.orderBy(asc(announcements[sortBy]))
+        : baseQuery.orderBy(desc(announcements[sortBy]));
+
+    const data = await sortedQuery.limit(limit).offset(offset);
+
+    const totalResult = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(announcements)
+      .where(conditions.length ? and(...conditions) : undefined);
+
+    const total = Number(totalResult[0].count ?? 0);
+
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  },
 
   async findById(id: string) {
     const result = await db

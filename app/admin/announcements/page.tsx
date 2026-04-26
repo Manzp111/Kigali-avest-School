@@ -7,8 +7,8 @@ import DeleteConfirmModal from "@/components/announcement/DeleteConfirmModal";
 import { apiClient } from "@/lib/utils/apiClient";
 import { 
   Plus, Search, Edit2, Trash2, 
-  Megaphone, CheckCircle, FileText, 
-  Filter as FilterIcon, MoreVertical 
+  Megaphone, CheckCircle, FileText,
+  ChevronLeft, ChevronRight 
 } from "lucide-react";
 
 type Announcement = {
@@ -24,7 +24,6 @@ type Announcement = {
 
 type Filter = "all" | "published" | "draft";
 
-// Helper for dates
 const formatDate = (dateStr: string) => {
   return new Date(dateStr).toLocaleDateString("en-RW", {
     day: "2-digit",
@@ -38,19 +37,27 @@ export default function AnnouncementsPage() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<Filter>("all");
   const [query, setQuery] = useState("");
+  
+  // Pagination State
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const [formOpen, setFormOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<Announcement | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Announcement | null>(null);
   const [deleteOpen, setDeleteOpen] = useState(false);
 
-  useEffect(() => { fetchAnnouncements(); }, []);
+  useEffect(() => { fetchAnnouncements(); }, [page, filter]);
 
   async function fetchAnnouncements() {
     setLoading(true);
     try {
-      const res = await apiClient("/api/announcement");
-      setData(res.data ?? []);
+      // Assuming your backend handles ?page and ?status
+      const res = await apiClient(`/api/announcement?page=${page}&limit=2&status=${filter}`);
+      if (res.success) {
+        setData(res.data ?? []);
+        setTotalPages(res.meta?.totalPages || 1);
+      }
     } catch (err) {
       console.error(err);
     } finally {
@@ -59,25 +66,40 @@ export default function AnnouncementsPage() {
   }
 
   async function togglePublish(id: string, current: boolean) {
+    // Optimistic Update
+    const originalData = [...data];
+    setData((prev) => prev.map((a) => (a.id === id ? { ...a, isPublished: !current } : a)));
+
     try {
-      await apiClient(`/api/announcement/${id}`, {
+      const res = await apiClient(`/api/announcement/${id}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ isPublished: !current }),
       });
-      setData((prev) => prev.map((a) => (a.id === id ? { ...a, isPublished: !current } : a)));
-    } catch (err) { console.error(err); }
+      if (!res.success) throw new Error();
+    } catch (err) {
+      // Rollback on error
+      setData(originalData);
+      console.error("Toggle failed", err);
+    }
   }
 
-  const filtered = useMemo(() => {
-    return data.filter((d) => {
-      const matchFilter = filter === "all" || (filter === "published" ? d.isPublished : !d.isPublished);
-      const matchQuery = !query || d.title.toLowerCase().includes(query.toLowerCase());
-      return matchFilter && matchQuery;
-    });
-  }, [data, filter, query]);
+ const filtered = useMemo(() => {
+  return data.filter((item) => {
+    // 1. Status Filter Logic
+    const matchFilter = 
+      filter === "all" || 
+      (filter === "published" ? item.isPublished === true : item.isPublished === false);
 
-  if (loading) return (
+    // 2. Search Query Logic
+    const matchQuery = 
+      !query || item.title.toLowerCase().includes(query.toLowerCase());
+
+    // Only return items that satisfy BOTH
+    return matchFilter && matchQuery;
+  });
+}, [data, filter, query]);
+
+  if (loading && data.length === 0) return (
     <div className="flex h-screen items-center justify-center bg-slate-50">
       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#E31E24]"></div>
     </div>
@@ -86,7 +108,7 @@ export default function AnnouncementsPage() {
   return (
     <div className="min-h-screen bg-[#F8FAFC] p-4 lg:p-8 font-sans text-slate-900">
       <AnnouncementModal open={formOpen} onClose={() => setFormOpen(false)} onSuccess={fetchAnnouncements} announcement={editTarget} userId="ADMIN_ID" />
-      <DeleteConfirmModal open={deleteOpen} onClose={() => setDeleteOpen(false)} onSuccess={() => setData(prev => prev.filter(a => a.id !== deleteTarget?.id))} announcement={deleteTarget} />
+      <DeleteConfirmModal open={deleteOpen} onClose={() => setDeleteOpen(false)} onSuccess={fetchAnnouncements} announcement={deleteTarget} />
 
       {/* --- Top Header --- */}
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
@@ -124,7 +146,7 @@ export default function AnnouncementsPage() {
             {(["all", "published", "draft"] as Filter[]).map((f) => (
               <button
                 key={f}
-                onClick={() => setFilter(f)}
+                onClick={() => { setFilter(f); setPage(1); }}
                 className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
                   filter === f ? "bg-[#E31E24] text-white shadow-md" : "text-slate-500 hover:text-slate-700"
                 }`}
@@ -138,7 +160,7 @@ export default function AnnouncementsPage() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#E31E24] transition-colors" size={18} />
             <input 
               type="text" 
-              placeholder="Search announcements..."
+              placeholder="Search page..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               className="pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-100 focus:border-[#E31E24] w-full md:w-72 transition-all"
@@ -171,13 +193,13 @@ export default function AnnouncementsPage() {
                     <div className="flex justify-center">
                       <button 
                         onClick={() => togglePublish(item.id, item.isPublished)}
-                        className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter border transition-all ${
-                          item.isPublished 
-                            ? "bg-green-50 border-green-200 text-green-600" 
-                            : "bg-slate-100 border-slate-200 text-slate-500"
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${
+                          item.isPublished ? "bg-green-500" : "bg-slate-300"
                         }`}
                       >
-                        {item.isPublished ? "● Published" : "○ Draft"}
+                        <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                          item.isPublished ? "translate-x-6" : "translate-x-1"
+                        }`} />
                       </button>
                     </div>
                   </td>
@@ -201,14 +223,29 @@ export default function AnnouncementsPage() {
               ))}
             </tbody>
           </table>
-          {filtered.length === 0 && (
-            <div className="py-20 text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-slate-100 rounded-full text-slate-400 mb-4">
-                <Search size={32} />
-              </div>
-              <p className="text-slate-500 font-medium">No announcements found matching your criteria.</p>
-            </div>
-          )}
+        </div>
+
+        {/* --- Pagination Footer --- */}
+        <div className="p-6 border-t border-slate-100 bg-slate-50/30 flex items-center justify-between">
+          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+            Page {page} <span className="mx-1 opacity-30">/</span> {totalPages}
+          </p>
+          <div className="flex items-center gap-2">
+            <button 
+              disabled={page === 1}
+              onClick={() => setPage(p => p - 1)}
+              className="p-2 rounded-xl bg-white border border-slate-200 text-slate-600 disabled:opacity-30 hover:border-[#E31E24] hover:text-[#E31E24] transition-all shadow-sm"
+            >
+              <ChevronLeft size={18} />
+            </button>
+            <button 
+              disabled={page === totalPages}
+              onClick={() => setPage(p => p + 1)}
+              className="p-2 rounded-xl bg-white border border-slate-200 text-slate-600 disabled:opacity-30 hover:border-[#E31E24] hover:text-[#E31E24] transition-all shadow-sm"
+            >
+              <ChevronRight size={18} />
+            </button>
+          </div>
         </div>
       </div>
     </div>
