@@ -29,8 +29,9 @@ export function Header() {
   };
 
   return (
-    <header className="fixed top-0 w-full z-50 bg-white shadow-sm">
+    <header className="fixed top-0 w-full z-50 bg-white shadow-sm flex flex-col">
       <AnnouncementPopup />
+    <div className="w-full bg-white">
       <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between h-20">        
         
         {/* LOGO & BRANDING - Wrapped in Link for better navigation */}
@@ -83,6 +84,7 @@ export function Header() {
           </div>
         </div>
       </div>
+    </div>
     </header>
   );
 }

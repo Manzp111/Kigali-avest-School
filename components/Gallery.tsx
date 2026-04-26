@@ -102,7 +102,7 @@ export function Gallery() {
             <div className="mt-16 flex justify-center">
               <Link
                 href="/gallery"
-                className="px-10 py-4 bg-[#004795] text-white rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-blue-800 transition-all shadow-lg shadow-blue-900/20 active:scale-95"
+                className="px-10 py-4 bg-red-500 text-white rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-blue-800 transition-all shadow-lg shadow-blue-900/20 active:scale-95"
               >
                 View More Pictures
               </Link>

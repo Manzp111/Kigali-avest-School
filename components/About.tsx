@@ -3,7 +3,7 @@ export function About() {
   return (
     <section id="about" className="py-20 px-4 bg-white">
       <div className="max-w-6xl mx-auto">
-        <div className="bg-red-200 border-l-4 border-[#1E4F9A] p-6 mb-12">
+        <div className="bg-red-300 border-l-4 border-[#1E4F9A] p-6 mb-12">
           <p className="text-lg text-gray-800">
             <strong>Admissions Open – Limited Spaces Available</strong>
           </p>

@@ -4,9 +4,12 @@ import { Footer } from '@/components/Footer';
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>
+      <body className="flex flex-col min-h-screen">
         <Header />
-        {children}
+        {/* This div grows to fill the space between Header and Footer */}
+        <div className="flex-grow pt-9">
+          {children}
+        </div>
         <Footer />
       </body>
     </html>

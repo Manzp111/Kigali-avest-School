@@ -47,7 +47,9 @@ useEffect(() => {
   }, [heroImages]);
 
   return (
+    
     <section className="relative h-screen min-h-[700px] overflow-hidden bg-[#004795]">
+      
       
       {/* Background Images Layer */}
     {/* Background Images Layer */}
@@ -121,5 +123,6 @@ useEffect(() => {
         </svg>
       </div>
     </section>
+     
   );
 }

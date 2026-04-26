@@ -1,14 +1,6 @@
 @import "tailwindcss";
-  /* #D62828 red secondary */
-  /* #1E4F9A blue primary */
-  /* #b71f1f red darken-4 */
-  /* #F5F7FA   /* light background */
-/* #FFFFFF   /* cards / sections */
-/* #3A6FCF light blue */
 
-/* app/globals.css */
-
-
+/* custom animations */
 @keyframes fadeUp {
   from {
     opacity: 0;
@@ -24,10 +16,11 @@
   animation: fadeUp 0.6s ease-out forwards;
 }
 
-/* Solvit-style smooth lift */
 .hover-lift {
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.3s ease;
 }
+
 .hover-lift:hover {
   transform: translateY(-10px);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
