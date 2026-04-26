@@ -109,7 +109,7 @@ useEffect(() => {
           {/* Social Proof */}
           <div className="flex items-center text-blue-100 bg-black/30 backdrop-blur-md w-fit p-4 rounded-3xl border border-white/10 shadow-2xl">
             <p className="text-xs md:text-sm font-medium flex items-center gap-3">
-              <span className="text-3xl font-black text-white font-extrabold ">9000+</span> 
+              <span className="text-3xl font-black text-white font-extrabold ">500+</span> 
               <span className="opacity-80">Parents trust our <br/> excellence</span>
             </p>
           </div>
