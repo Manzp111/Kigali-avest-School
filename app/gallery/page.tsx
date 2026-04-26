@@ -1,141 +1,158 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { ArrowRight, Calendar } from "lucide-react";
+import { useEffect, useState } from "react";
+import ImageModal from "@/components/ImageModal";
 
-export default function Hero() {
-  const heroImages = [
-    "https://ucarecdn.com/61c10189-0166-4456-8bec-492217cf7ef3/-/format/auto/",
-    "https://ucarecdn.com/c28c5da8-d05f-49e3-b855-2bdd94416032/-/format/auto/",
-    "https://ucarecdn.com/0e60bd79-97c4-4f89-8934-1ddff8a6976c/-/format/auto/",
-    "https://ucarecdn.com/a0d758eb-d2d4-4231-94da-1bb55ae1087f/-/format/auto/",
-    "https://ucarecdn.com/7a9dbbf7-6508-4c24-b0d2-d1eb5b64e513/-/format/auto/",
-    "https://ucarecdn.com/f921b7f1-9718-4c80-bde8-3e91b08e643e/-/format/auto/",
-  ];
 
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+type GalleryImage = {
+  id: string;
+  title: string;
+  subtitle: string | null;
+  imageUrl: string;
+  type: string;
+  published: boolean;
+};
+
+type PaginationData = {
+  page: number;
+  limit: number;
+  total: string | number;
+  totalPages: number;
+};
+
+export default function GalleryPage() {
+  const [images, setImages] = useState<GalleryImage[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [pagination, setPagination] = useState<PaginationData | null>(null);
+  const [selectedImage, setSelectedImage] = useState<{ src: string; alt: string } | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % heroImages.length);
-    }, 5000); // Change image every 5 seconds
+    fetchGallery();
+  }, [currentPage]);
+ const fetchGallery = async () => {
+    try {
+      setLoading(true);
+      
+      // 1. Build the query string
+      const params = new URLSearchParams({
+        page: currentPage.toString(),
+        limit: "12",
+        type: "gallery",
+        published: "true"
+      });
 
-    return () => clearInterval(interval);
-  }, [heroImages.length]);
+      // 2. Use standard browser fetch
+      const response = await fetch(`/api/gallery?${params.toString()}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        // Explicitly ensuring no credentials/auth headers are attached if needed
+        cache: 'no-store' 
+      });
+
+      const res = await response.json();
+
+      if (res && res.success) {
+        setImages(res.data || []);
+        setPagination(res.pagination);
+      } else {
+        setImages([]);
+      }
+    } catch (error) {
+      console.error("Gallery Public Fetch Error:", error);
+      setImages([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <section className="relative h-[600px] md:h-[700px] overflow-hidden">
-      {/* Animated Hero Background Carousel */}
-      {heroImages.map((image, index) => (
-        <div
-          key={index}
-          className="absolute inset-0 z-0 transition-opacity duration-[1500ms] ease-in-out"
-          style={{
-            opacity: currentImageIndex === index ? 1 : 0,
-            pointerEvents: currentImageIndex === index ? "auto" : "none",
-          }}
-        >
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage: `url('${image}')`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              animation:
-                currentImageIndex === index
-                  ? "kenBurns 5000ms ease-out forwards"
-                  : "none",
-            }}
-          >
-            <div className="absolute inset-0 bg-blue-900/60 mix-blend-multiply"></div>
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-900/80 to-transparent"></div>
-          </div>
+    // min-h-screen ensures footer stays at bottom if content is short
+    // pt-24 ensures the content starts AFTER the fixed header
+    <main className="min-h-screen pt-24 pb-20 bg-gradient-to-b from-white to-blue-50">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="text-center mb-12">
+          <h2 className="text-4xl text-blue-900 mb-4 font-bold uppercase tracking-tight">Full School Gallery</h2>
+          <div className="w-24 h-1.5 bg-[#E31E24] mx-auto mb-4"></div>
+          <p className="text-gray-500 font-medium italic">Explore all moments from Kigali Harvest School</p>
         </div>
-      ))}
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 h-full flex flex-col justify-center">
-        <div className="max-w-2xl text-white">
-          <div className="inline-block bg-[#f59e0b] text-white px-4 py-1 rounded-full font-bold text-sm mb-6 uppercase tracking-wider animate-bounce">
-            Admissions Open 2026/27
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-20 gap-4">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#004795]"></div>
+            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Synchronizing Media...</p>
           </div>
-          <h2 className="text-4xl md:text-7xl font-extrabold mb-6 leading-[1.1]">
-            Strive For The <br />
-            <span className="text-[#fbbf24]">Best Harvest</span>
-          </h2>
-          <p className="text-lg md:text-xl mb-10 text-blue-50 leading-relaxed font-light">
-            Quality Nursery and Primary Education in Kigali focused on providing
-            quality education, culture, and Christian values for the
-            sustainability of Rwanda's future generations.
-          </p>
-
-          <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-            <a
-              href="#admissions"
-              className="bg-[#047857] hover:bg-[#065f46] text-white px-8 py-4 rounded-xl font-bold text-lg shadow-xl transition transform hover:-translate-y-1 flex items-center justify-center"
-            >
-              Enroll Now
-              <ArrowRight className="ml-2" size={20} />
-            </a>
-            <a
-              href="#contact"
-              className="bg-white hover:bg-gray-100 text-[#1e3a5f] px-8 py-4 rounded-xl font-bold text-lg shadow-xl transition transform hover:-translate-y-1 flex items-center justify-center"
-            >
-              Book a Visit
-              <Calendar className="ml-2" size={20} />
-            </a>
+        ) : images.length === 0 ? (
+          <div className="text-center py-20 bg-white rounded-[2rem] border border-dashed border-slate-200 shadow-sm">
+            <p className="text-slate-400 font-bold uppercase text-sm tracking-widest">
+              No gallery images available at the moment.
+            </p>
           </div>
-
-          <div className="mt-12 flex items-center text-blue-100">
-            <div className="flex -space-x-3 mr-4">
-              {[
-                "https://images.unsplash.com/photo-1531384441138-2736e62e0919?w=100&h=100&fit=crop&crop=faces&sat=-100&bri=-20",
-                "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=100&h=100&fit=crop&crop=faces",
-                "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=faces&sat=-100&bri=-20",
-                "https://images.unsplash.com/photo-1507114845806-0347f6150324?w=100&h=100&fit=crop&crop=faces",
-              ].map((imgUrl, i) => (
+        ) : (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {images.map((image) => (
                 <div
-                  key={i}
-                  className="w-10 h-10 rounded-full border-2 border-blue-900 bg-gray-300 overflow-hidden"
+                  key={image.id}
+                  className="group relative overflow-hidden rounded-[2rem] shadow-sm hover:shadow-2xl transition-all duration-500 cursor-pointer bg-white border border-slate-100"
+                  onClick={() => setSelectedImage({ src: image.imageUrl, alt: image.title })}
                 >
-                  <img
-                    src={imgUrl}
-                    alt="Parent"
-                    className="w-full h-full object-cover"
-                    style={{ filter: "brightness(0.7) saturate(1.2)" }}
-                  />
+                  <div className="aspect-[4/3] overflow-hidden">
+                    <img
+                      src={image.imageUrl}
+                      alt={image.title}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                  </div>
+                  
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#004795]/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-8">
+                    <h3 className="text-white font-black text-lg uppercase tracking-tight transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                      {image.title}
+                    </h3>
+                    {image.subtitle && (
+                      <p className="text-blue-100 text-xs mt-2 line-clamp-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-75">
+                        {image.subtitle}
+                      </p>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
-            <p className="text-sm">
-              <span className="font-bold text-[#fbbf24]">500+</span> Parents
-              trust us with their children's future
-            </p>
-          </div>
-        </div>
+
+            {pagination && pagination.totalPages > 1 && (
+              <div className="mt-16 flex justify-center items-center gap-4">
+                <button
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage(p => p - 1)}
+                  className="px-6 py-3 rounded-xl bg-white border border-slate-200 text-[10px] font-black uppercase tracking-widest hover:bg-[#004795] hover:text-white disabled:opacity-30 transition-all shadow-sm"
+                >
+                  Previous
+                </button>
+                <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                  Page {currentPage} of {pagination.totalPages}
+                </span>
+                <button
+                  disabled={currentPage === pagination.totalPages}
+                  onClick={() => setCurrentPage(p => p + 1)}
+                  className="px-6 py-3 rounded-xl bg-white border border-slate-200 text-[10px] font-black uppercase tracking-widest hover:bg-[#004795] hover:text-white disabled:opacity-30 transition-all shadow-sm"
+                >
+                  Next
+                </button>
+              </div>
+            )}
+          </>
+        )}
       </div>
 
-      {/* Decorative Wave */}
-      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-[0]">
-        <svg
-          viewBox="0 0 1200 120"
-          preserveAspectRatio="none"
-          className="relative block w-[calc(100%+1.3px)] h-[60px] fill-white"
-        >
-          <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V120H0V95.8C58,117.26,123.07,124.76,187.52,117.55c65-7.25,129.3-24.22,188.43-41.1Z"></path>
-        </svg>
-      </div>
-
-      {/* Ken Burns Animation CSS */}
-      <style jsx global>{`
-        @keyframes kenBurns {
-          0% {
-            transform: scale(1);
-          }
-          100% {
-            transform: scale(1.08);
-          }
-        }
-      `}</style>
-    </section>
+      {selectedImage && (
+        <ImageModal
+          src={selectedImage.src}
+          alt={selectedImage.alt}
+          onClose={() => setSelectedImage(null)}
+        />
+      )}
+    </main>
   );
 }

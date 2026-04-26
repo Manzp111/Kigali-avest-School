@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import ImageModal from "@/components/ImageModal";
-import { apiClient } from "@/lib/utils/apiClient"; // Using your apiClient
+import { apiClient } from "@/lib/utils/apiClient";
 
 type GalleryImage = {
   id: string;
@@ -13,43 +14,28 @@ type GalleryImage = {
   published: boolean;
 };
 
-type PaginationData = {
-  page: number;
-  limit: number;
-  total: string | number;
-  totalPages: number;
-};
-
 export function Gallery() {
   const [images, setImages] = useState<GalleryImage[]>([]);
   const [loading, setLoading] = useState(true);
-  const [pagination, setPagination] = useState<PaginationData | null>(null);
   const [selectedImage, setSelectedImage] = useState<{ src: string; alt: string } | null>(null);
-  
-  // Public gallery usually only shows published items of type 'gallery'
-  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     fetchGallery();
-  }, [currentPage]);
+  }, []);
 
   const fetchGallery = async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
-      params.append("page", currentPage.toString());
-      params.append("limit", "12"); // Test with 12 for public view
-      
-      // Hardcoded filters for the public gallery view
+      params.append("page", "1");
+      params.append("limit", "6"); // Only fetch the first 6 pictures
       params.append("type", "gallery");
       params.append("published", "true");
       
       const res = await apiClient(`/api/gallery?${params.toString()}`);
 
       if (res && res.success) {
-        // Accessing res.data as per your JSON structure
         setImages(res.data || []);
-        setPagination(res.pagination);
       } else {
         setImages([]);
       }
@@ -98,7 +84,6 @@ export function Gallery() {
                     />
                   </div>
                   
-                  {/* Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-[#004795]/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-8">
                     <h3 className="text-white font-black text-lg uppercase tracking-tight transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                       {image.title}
@@ -113,28 +98,15 @@ export function Gallery() {
               ))}
             </div>
 
-            {/* Simple Pagination for Public View */}
-            {pagination && pagination.totalPages > 1 && (
-              <div className="mt-16 flex justify-center items-center gap-4">
-                <button
-                  disabled={currentPage === 1}
-                  onClick={() => setCurrentPage(p => p - 1)}
-                  className="px-6 py-3 rounded-xl bg-white border border-slate-200 text-[10px] font-black uppercase tracking-widest hover:bg-[#004795] hover:text-white disabled:opacity-30 transition-all"
-                >
-                  Previous
-                </button>
-                <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                  Page {currentPage} of {pagination.totalPages}
-                </span>
-                <button
-                  disabled={currentPage === pagination.totalPages}
-                  onClick={() => setCurrentPage(p => p + 1)}
-                  className="px-6 py-3 rounded-xl bg-white border border-slate-200 text-[10px] font-black uppercase tracking-widest hover:bg-[#004795] hover:text-white disabled:opacity-30 transition-all"
-                >
-                  Next
-                </button>
-              </div>
-            )}
+            {/* View More Button at the bottom */}
+            <div className="mt-16 flex justify-center">
+              <Link
+                href="/gallery"
+                className="px-10 py-4 bg-[#004795] text-white rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-blue-800 transition-all shadow-lg shadow-blue-900/20 active:scale-95"
+              >
+                View More Pictures
+              </Link>
+            </div>
           </>
         )}
       </div>

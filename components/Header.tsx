@@ -1,13 +1,23 @@
 'use client';
 
 import AnnouncementPopup from '@/components/AnnouncementPopup';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 
 export function Header() {
+  const pathname = usePathname();
+  const router = useRouter();
+
   const scrollToSection = (id: string) => {
+    // If we are not on the homepage, navigate home first then scroll
+    if (pathname !== '/') {
+      router.push(`/#${id}`);
+      return;
+    }
+
     const element = document.getElementById(id);
     if (element) {
-      // Calculate header height to offset the scroll so the title isn't hidden
-      const headerOffset = 80; 
+      const headerOffset = 100; // Increased offset to account for Announcement bar
       const elementPosition = element.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
 
@@ -19,14 +29,12 @@ export function Header() {
   };
 
   return (
-<header className="fixed top-0 w-full bg-white z-50">
-        <AnnouncementPopup />
-<div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between h-20">        
-        {/* LOGO & BRANDING */}
-        <div 
-          className="flex items-center gap-3 cursor-pointer group" 
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        >
+    <header className="fixed top-0 w-full z-50 bg-white shadow-sm">
+      <AnnouncementPopup />
+      <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between h-20">        
+        
+        {/* LOGO & BRANDING - Wrapped in Link for better navigation */}
+        <Link href="/" className="flex items-center gap-3 cursor-pointer group">
           <div className="w-16 h-16 flex items-center justify-center overflow-hidden">
             <img
               src="/image/logo.jpeg"
@@ -43,7 +51,7 @@ export function Header() {
               Excellence in Education
             </p>
           </div>
-        </div>
+        </Link>
 
         {/* NAVIGATION & CONTACT */}
         <div className="flex items-center gap-10">
@@ -65,19 +73,11 @@ export function Header() {
             ))}
           </nav>
 
-          {/* CONTACT PHONE */}
-          <div className="hidden md:flex items-center gap-3  px-5 py-2.5 rounded-2xl  group hover:bg-[#004795] transition-all duration-300">
-            <svg 
-              className="w-5 h-5 text-[#004795] group-hover:text-white transition-colors" 
-              fill="currentColor" 
-              viewBox="0 0 20 20"
-            >
+          <div className="hidden md:flex items-center gap-3 px-5 py-2.5 rounded-2xl group hover:bg-[#004795] transition-all duration-300 border border-slate-100">
+            <svg className="w-5 h-5 text-[#004795] group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 20 20">
               <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
             </svg>
-            <a 
-              href="tel:+250788510446" 
-              className="text-[#004795] font-black text-sm group-hover:text-white transition-colors"
-            >
+            <a href="tel:+250788510446" className="text-[#004795] font-black text-sm group-hover:text-white transition-colors">
               +250 788 510 446
             </a>
           </div>
