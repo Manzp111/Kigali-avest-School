@@ -48,7 +48,7 @@ useEffect(() => {
 
   return (
     
-    <section id="home" className="relative h-screen min-h-[700px] overflow-hidden bg-[#004795]">
+<section id="home" className="relative h-screen min-h-[700px] overflow-hidden bg-[#004795]">
       
       
       {/* Background Images Layer */}

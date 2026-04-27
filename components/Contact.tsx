@@ -52,11 +52,11 @@ export function Contact() {
                   <div>
                     <h4 className="text-[#004795] font-bold text-lg mb-1">Phone</h4>
                     <a href="tel:+250788510446" className="text-slate-600 hover:text-[#E31E24] font-medium transition-colors">
-                      +250788510446
+                      +250 788 510 446
                     </a>
                     <br />
                      <a href="tel:+250783102133" className="text-slate-600 hover:text-[#E31E24] font-medium transition-colors">
-                      +250783102133
+                      +250 783 102 133
                     </a>
                   </div>
                 </div>

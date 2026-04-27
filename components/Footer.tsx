@@ -51,11 +51,19 @@ export function Footer() {
                 </a>
                 <br />
                  <a
-                  href="mailto:kigaliharvestschool@yahoo.fr"
+                  href="https://mail.google.com/mail/?view=cm&to=kigaliharvestschool@yahoo.fr&su=R:E&body=Write%20your%20message%20like%20to%20here"
                   className="text-blue-200 hover:text-white transition-colors hover:underline"
                 >
                   kigaliharvestschool@yahoo.fr
                 </a>
+                 {/* <a
+              href="https://mail.google.com/mail/?view=cm&to=kigaliharvestschool@yahoo.fr&su=R:E&body=Write%20your%20message%20like%20to%20here"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-[#E31E24] hover:bg-[#b71f1f] text-white px-10 py-5 rounded-2xl font-bold text-xl shadow-2xl transition-all transform hover:-translate-y-1 flex items-center justify-center group"
+            >
+              Enroll Now
+            </a> */}
               </li>
               
   
