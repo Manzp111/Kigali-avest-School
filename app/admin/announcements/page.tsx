@@ -79,7 +79,7 @@ export default function AnnouncementsPage() {
     } catch (err) {
       // Rollback on error
       setData(originalData);
-      console.error("Toggle failed", err);
+      // console.error("Toggle failed", err);
     }
   }
 

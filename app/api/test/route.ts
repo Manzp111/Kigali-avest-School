@@ -15,7 +15,7 @@ export async function GET() {
       data,
     });
   } catch (error) {
-    console.error("ANNOUNCEMENTS TEST ERROR:", error);
+    // console.error("ANNOUNCEMENTS TEST ERROR:", error);
 
     return NextResponse.json(
       {

@@ -133,7 +133,7 @@ export async function POST(req: NextRequest) {
     );
 
   } catch (err: any) {
-    console.error("Gallery POST Error:", err);
+    // console.error("Gallery POST Error:", err);
     
     // Handle Zod validation errors specifically
     if (err.name === "ZodError") {

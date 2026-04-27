@@ -63,28 +63,14 @@ export async function POST(req: NextRequest) {
 
     return response;
 
-  } catch (error: any) {
-    // LOG TO VERCEL (Visible in Logs tab)
-    console.error("[CRITICAL LOGIN ERROR]:", error);
+  } catch (error: any) {  
 
-    // RETURN FULL ERROR TO FRONTEND FOR DEBUGGING
+    // RETURN error
     return NextResponse.json(
       {
         success: false,
         message: error.message || "Internal server error",
-        debug: {
-          errorName: error.name,
-          stack: error.stack?.split('\n')[0], // First line of the stack trace
-          envCheck: {
-            hasDbUrl: !!process.env.DATABASE_URL,
-            hasAccessSecret: !!process.env.JWT_ACCESS_SECRET,
-            hasRefreshSecret: !!process.env.JWT_REFRESH_SECRET,
-          },
-          // Helpful hint for common Vercel errors
-          hint: error.message?.includes("relation") 
-            ? "Your 'users' table is likely missing in Supabase." 
-            : "Check your Vercel Environment Variables."
-        }
+        
       },
       { status: error.status || 500 }
     );

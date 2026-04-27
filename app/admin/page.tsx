@@ -56,7 +56,7 @@ useEffect(() => {
         }
 
       } catch (err) {
-        console.error("Dashboard Sync Error:", err);
+        // console.error("Dashboard Sync Error:", err);
       } finally {
         setLoading(false);
       }

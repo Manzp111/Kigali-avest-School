@@ -61,7 +61,7 @@ export default function GalleryPage() {
         setImages([]);
       }
     } catch (error) {
-      console.error("Gallery Public Fetch Error:", error);
+      // console.error("Gallery Public Fetch Error:", error);
       setImages([]);
     } finally {
       setLoading(false);

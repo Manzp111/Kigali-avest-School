@@ -3,27 +3,20 @@ import { NextRequest, NextResponse } from "next/server";
 export function withErrorHandler(handler: any) {
   return async (req: NextRequest, context?: any) => {
     const requestId = Math.random().toString(36).substring(7); // Unique ID to track this specific request
-    console.log(`[START REQUEST ${requestId}]: ${req.method} ${req.url}`);
+    // console.log(`[START REQUEST ${requestId}]: ${req.method} ${req.url}`);
 
     try {
       // Trace: Before executing the actual route logic
-      console.log(`[TRACE ${requestId}]: Entering handler logic...`);
+      // console.log(`[TRACE ${requestId}]: Entering handler logic...`);
       
       const response = await handler(req, context);
       
       // Trace: Success
-      console.log(`[TRACE ${requestId}]: Handler executed successfully with status ${response.status}`);
+      // console.log(`[TRACE ${requestId}]: Handler executed successfully with status ${response.status}`);
       return response;
 
     } catch (err: any) {
-      // 1. CRITICAL LOG: This is what you look for in Vercel Dashboard
-      console.error(`[FATAL ERROR ${requestId}]:`, {
-        name: err.name,
-        message: err.message,
-        stack: err.stack,
-        // Detect if the error happened during a DB query
-        isDatabaseError: err.message?.includes("drizzle") || err.message?.includes("postgres")
-      });
+           
 
       // 2. Identify the error type
       const isUnauthorized = 
@@ -48,7 +41,7 @@ export function withErrorHandler(handler: any) {
       let responseMessage = err.message || "Internal Server Error";
       
       if (isConnError) {
-        console.warn(`[DIAGNOSTIC ${requestId}]: Potential DB Connection issue detected.`);
+        // console.warn(`[DIAGNOSTIC ${requestId}]: Potential DB Connection issue detected.`);
         responseMessage = "Database connection failed. Verify DATABASE_URL in Vercel Settings.";
       }
 
