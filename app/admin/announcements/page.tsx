@@ -132,9 +132,9 @@ export default function AnnouncementsPage() {
 
       {/* --- Stats Summary --- */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <StatCard label="Total Posts" value={data.length} icon={<Megaphone className="text-blue-500" />} />
-        <StatCard label="Live on Site" value={data.filter(a => a.isPublished).length} icon={<CheckCircle className="text-green-500" />} />
-        <StatCard label="Drafts" value={data.filter(a => !a.isPublished).length} icon={<FileText className="text-amber-500" />} />
+        <StatCard label="Total Posts" value={data.length} icon={<Megaphone className="text-[#004795]" />} />
+        <StatCard label="Live on Site" value={data.filter(a => a.isPublished).length} icon={<CheckCircle className="text-[#004795]" />} />
+        <StatCard label="Drafts" value={data.filter(a => !a.isPublished).length} icon={<FileText className="text-[#004795]" />} />
       </section>
 
       {/* --- Main Content Card --- */}
@@ -194,7 +194,7 @@ export default function AnnouncementsPage() {
                       <button 
                         onClick={() => togglePublish(item.id, item.isPublished)}
                         className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${
-                          item.isPublished ? "bg-green-500" : "bg-slate-300"
+                          item.isPublished ? "bg-[#004795]" : "bg-slate-300"
                         }`}
                       >
                         <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
