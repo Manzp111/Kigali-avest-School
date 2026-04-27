@@ -58,6 +58,7 @@ export function Header() {
         <div className="flex items-center gap-10">
           <nav className="hidden lg:flex items-center gap-8">
             {[
+              { label: 'Home', id: 'home' },
               { label: 'About Us', id: 'about' },
               { label: 'Programs', id: 'programs' },
               { label: 'Gallery', id: 'gallery' },
