@@ -130,7 +130,7 @@ const handleSubmit = async (e: React.FormEvent) => {
           {/* FOOTER LINKS */}
           <div className="flex flex-col items-center gap-3 pt-2">
             <p className="text-[11px] font-bold text-slate-500 uppercase">
-              New here? <a href="/signup" className="text-[#E31E24] font-black hover:underline">Create an Account</a>
+              New here? <a href="/signup" className="text-[#004795] font-black hover:underline">Create an Account</a>
             </p>
             <a href="#" className="text-[10px] font-black text-[#004795] uppercase tracking-tighter opacity-70 hover:opacity-100">
               Forgot Password?
