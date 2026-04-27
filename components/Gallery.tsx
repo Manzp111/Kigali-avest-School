@@ -51,7 +51,7 @@ export function Gallery() {
     <section id="gallery" className="py-20 px-4 bg-gradient-to-b from-white to-blue-50">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
-          <h2 className="text-4xl text-blue-900 mb-4 font-bold uppercase tracking-tight">Our School Gallery</h2>
+          <h2 className="text-4xl text-blue-900 mb-4 font-bold tracking-tight">Our School Gallery</h2>
           <div className="w-24 h-1.5 bg-[#E31E24] mx-auto mb-4"></div>
           <p className="text-gray-500 font-medium italic">A glimpse into life at Kigali Harvest School</p>
         </div>

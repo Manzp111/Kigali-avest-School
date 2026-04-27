@@ -1,40 +1,49 @@
 import { NextRequest, NextResponse } from "next/server";
 
-type Handler = (
-  req: NextRequest,
-  context?: any
-) => Promise<Response>;
-
-export function withErrorHandler(handler: Handler) {
+// Standardizing error names to avoid import loops
+export function withErrorHandler(handler: any) {
   return async (req: NextRequest, context?: any) => {
     try {
       return await handler(req, context);
-    } catch (err: unknown) {
-      let message = "Internal Server Error";
+    } catch (err: any) {
+      // 1. Log the full error for Vercel Runtime Logs
+      console.error("[API ERROR]:", err);
 
-      // Safe error parsing
-      if (err instanceof Error) {
-        // 🔍 Detect DB-related errors
-        const isDbError =
-          err.message.includes("Failed query") ||
-          err.message.includes("fetch failed");
+      // 2. Identify the error type
+      const isUnauthorized = 
+        err.name === "UnauthorizedError" || 
+        err.status === 401 || 
+        err.message?.toLowerCase().includes("unauthorized") ||
+        err.message?.toLowerCase().includes("invalid credentials");
 
-        message = isDbError
-          ? "Database connection failed"
-          : "Internal Server Error";
+      const isConflict = err.name === "ConflictError" || err.status === 409;
 
-        // 👇 Only log message in development
-        if (process.env.NODE_ENV === "development") {
-          console.error("API Error:", err.message);
-        }
+      // 3. Identify Database/Connection issues (Common on Vercel)
+      const isConnError = 
+        err.message?.includes("ECONNREFUSED") || 
+        err.message?.includes("localhost") ||
+        err.message?.includes("fetch failed");
+
+      // 4. Construct the response
+      let statusCode = 500;
+      if (isUnauthorized) statusCode = 401;
+      else if (isConflict) statusCode = 409;
+
+      let responseMessage = err.message || "Internal Server Error";
+      
+      // Add a helpful hint if it's a database connection issue
+      if (isConnError) {
+        responseMessage = "Database connection failed. Check your DATABASE_URL env.";
       }
 
       return NextResponse.json(
         {
           success: false,
-          message,
+          message: responseMessage,
+          // Only show stack trace in development
+          stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
         },
-        { status: 500 }
+        { status: statusCode }
       );
     }
   };

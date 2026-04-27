@@ -42,10 +42,24 @@ export function Footer() {
             <ul className="space-y-2">
               <li className="text-blue-200">KG 653 St, Kigali</li>
               <li>
-                <a href="tel:+250788510446" className="text-blue-200 hover:text-white transition-colors">
+                <a href="tel:+250788510446" className="text-blue-200 hover:text-white transition-colors hover:underline">
                   +250 788 510 446
                 </a>
+                <br />
+                <a href="tel:+250783102133" className="text-blue-200 hover:text-white transition-colors hover:underline">
+                  +250 783 102 133
+                </a>
+                <br />
+                 <a
+                  href="mailto:kigaliharvestschool@yahoo.fr"
+                  className="text-blue-200 hover:text-white transition-colors hover:underline"
+                >
+                  kigaliharvestschool@yahoo.fr
+                </a>
               </li>
+              
+  
+        
             </ul>
             <div className="flex gap-3 mt-4">
               <a

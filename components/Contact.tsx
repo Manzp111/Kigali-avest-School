@@ -25,7 +25,7 @@ export function Contact() {
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-black text-[#004795] mb-4 uppercase tracking-tight">
+          <h2 className="text-4xl md:text-5xl font-black text-[#004795] mb-4 tracking-tight">
             Get in Touch
           </h2>
           <div className="flex justify-center gap-2 mb-6">
@@ -52,7 +52,11 @@ export function Contact() {
                   <div>
                     <h4 className="text-[#004795] font-bold text-lg mb-1">Phone</h4>
                     <a href="tel:+250788510446" className="text-slate-600 hover:text-[#E31E24] font-medium transition-colors">
-                      +250 788 510 446
+                      +250788510446
+                    </a>
+                    <br />
+                     <a href="tel:+250783102133" className="text-slate-600 hover:text-[#E31E24] font-medium transition-colors">
+                      +250783102133
                     </a>
                   </div>
                 </div>
@@ -113,7 +117,7 @@ export function Contact() {
                     onChange={handleChange}
                     required
                     className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-[#004795] focus:bg-white outline-none transition-all"
-                    placeholder="Karangwa Jean"
+                    placeholder="Enter your full name"
                   />
                 </div>
                 <div>
@@ -126,7 +130,7 @@ export function Contact() {
                     onChange={handleChange}
                     required
                     className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-[#004795] focus:bg-white outline-none transition-all"
-                    placeholder="kigaliharvestschool@yahoo.fr"
+                    placeholder="Enter your email address"
                   />
                 </div>
               </div>
@@ -141,7 +145,7 @@ export function Contact() {
                   onChange={handleChange}
                   required
                   className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-[#004795] focus:bg-white outline-none transition-all"
-                  placeholder=" +250783102133"
+                  placeholder=" +250..."
                 />
               </div>
 
@@ -155,7 +159,7 @@ export function Contact() {
                   required
                   rows={4}
                   className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-[#004795] focus:bg-white outline-none transition-all resize-none"
-                  placeholder="Tell us about your child's needs..."
+                  placeholder="How can we help you?"
                 ></textarea>
               </div>
 

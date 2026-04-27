@@ -48,7 +48,7 @@ export function Header() {
             <h2 className="text-[#004795] font-black text-xl tracking-tighter leading-none">
               KIGALI HARVEST SCHOOL
             </h2>
-            <p className="text-[12px] text-[#D62828] font-bold uppercase tracking-widest mt-1">
+            <p className="text-[15px] text-[#D62828] font-bold  tracking-widest mt-1">
               Excellence in Education
             </p>
           </div>

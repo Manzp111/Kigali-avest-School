@@ -68,7 +68,7 @@ export function WhyChoose() {
     <section id="why-choose" className="py-24 px-4 bg-white relative overflow-hidden">
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-black text-[#004795] mb-4 uppercase tracking-tight">
+          <h2 className="text-4xl md:text-5xl font-black text-[#004795] mb-4  tracking-tight">
             Why Kigali Harvest School?
           </h2>
           <div className="flex justify-center gap-2">

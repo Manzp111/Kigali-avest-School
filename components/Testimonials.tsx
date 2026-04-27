@@ -7,19 +7,19 @@ const testimonials = [
   {
     name: 'NZEYIMANA Francois Xavier',
     image: '/imports/Screenshot_2026-04-16_110117.png',
-    grade: 'Middle class Nursery',
+    grade: 'parents of children in middle and upper class nursery',
     text: 'We are proud to entrust our children to this Christian school, where they are nurtured in both academic excellence and strong social values. Through diverse club activities, students grow in knowledge, character, and confidence.'
   },
   {
     name: 'MUTESI Adrienne',
     image: '/imports/Screenshot_2026-04-16_104329.png',
-    grade: 'Grade 2 and Grade 5',
+    grade: 'parents of children in middle and upper class nursery',
     text: 'As a ministry of Restoration Church, this school instills the Word of God while nurturing children through music, drama, and quality education. It builds strong values, good character, and language excellence.'
   },
   {
     name: 'KABERA Marcel',
     image: '/imports/Screenshot_2026-04-16_104736.png',
-    grade: 'Upper class Nursery',
+    grade: 'parents of children in upper class nursery',
     text: 'This school provides excellent teaching and academic results. Through weekly Friday sermons and prayer gatherings, students develop strong values and discipline, which is why I confidently encourage other parents to enroll.'
   }
 ];
@@ -31,8 +31,8 @@ export function Testimonials() {
         
         {/* Header Section - Blue & Black Only */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-black text-[#004795] mb-4 uppercase tracking-tight">
-            What Parents Say
+          <h2 className="text-4xl md:text-5xl font-black text-[#004795] mb-4 tracking-tight">
+            Our Parents Say
           </h2>
           {/* Blue Divider (Black could be used here too if preferred) */}
           <div className="flex justify-center gap-2 mb-6">
@@ -69,7 +69,7 @@ export function Testimonials() {
                   <h4 className="text-lg font-bold text-[#004795] leading-tight group-hover:text-black transition-colors">
                     {testimonial.name}
                   </h4>
-                  <p className="text-[11px] font-black text-black uppercase tracking-widest mt-1 opacity-70">
+                  <p className="text-[11px] font-black text-black  tracking-widest mt-1 opacity-70">
                     {testimonial.grade}
                   </p>
                 </div>
