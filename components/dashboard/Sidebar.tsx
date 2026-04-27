@@ -114,7 +114,7 @@ export function Sidebar() {
       </nav>
 
       {/* DYNAMIC USER CARD */}
-      <div className="p-4 mt-auto">
+      {/* <div className="p-4 mt-auto">
         <div className="bg-black/20 backdrop-blur-md rounded-[2rem] p-4 border border-white/10">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-amber-400 flex items-center justify-center text-[#004795] font-black text-xs shadow-inner uppercase">
@@ -143,7 +143,7 @@ export function Sidebar() {
             Sign Out
           </button>
         </div>
-      </div>
+      </div> */}
 
       <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-amber-400/5 rounded-full blur-3xl pointer-events-none"></div>
     </div>

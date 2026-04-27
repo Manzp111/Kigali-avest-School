@@ -173,7 +173,7 @@ const handleUpdateUser = async (e: React.FormEvent) => {
                       }`} />
                     </button>
                     <span className={`text-[10px] font-black uppercase ${user.isVerified ? 'text-[#004795]' : 'text-slate-400'}`}>
-                      {user.isVerified ? 'Verified' : 'Pending'}
+                      {user.isVerified ? 'Remove Access' : 'Grant Access'}
                     </span>
                   </div>
                 </td>

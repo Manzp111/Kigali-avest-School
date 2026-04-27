@@ -251,8 +251,8 @@ export default function GalleryPage() {
       {/* HEADER */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-10 gap-6 bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100">
         <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">KIGALI HARVEST <span className="text-[#E31E24]">GALLERY</span></h1>
-          <p className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em] mt-1">Administrative Media Console</p>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight">KIGALI HARVEST  SCHOOL <span className="text-[#E31E24]">GALLERY</span></h1>
+          {/* <p className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em] mt-1">Administrative Media Console</p> */}
         </div>
 
         <div className="flex flex-wrap items-center gap-3">

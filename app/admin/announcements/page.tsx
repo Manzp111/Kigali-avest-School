@@ -113,11 +113,11 @@ export default function AnnouncementsPage() {
       {/* --- Top Header --- */}
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
         <div className="flex items-center gap-4">
-          <div className="relative w-16 h-16 bg-white rounded-2xl shadow-sm border border-slate-100 p-2">
+          {/* <div className="relative w-16 h-16 bg-white rounded-2xl shadow-sm border border-slate-100 p-2">
             <Image src="/image/logo.jpeg" alt="KHS Logo" fill className="object-contain p-2" />
-          </div>
+          </div> */}
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900">Kigali Harvest School</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900">Kigali Harvest School <span className="text-[#E31E24]">Announcements</span></h1>
             <p className="text-slate-500 text-sm">Communication & Announcement Center</p>
           </div>
         </div>

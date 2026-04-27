@@ -95,9 +95,11 @@ export default function AddGalleryModal({ onClose, onSuccess, initialData }: Pro
 
   return (
     <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md flex items-center justify-center z-[100] p-4 animate-in fade-in duration-300">
-      <div className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 border border-slate-100">
-        
+       
         {/* Error Overlay */}
+        <div className="bg-white w-full max-w-md sm:max-w-lg md:max-w-2xl lg:max-w-3xl 
+  max-h-[90vh] rounded-[2rem] shadow-2xl border border-slate-100 
+  flex flex-col overflow-hidden">
         {errorMessage && (
           <div className="absolute inset-0 z-[110] bg-white/95 backdrop-blur-sm flex flex-col items-center justify-center p-8 text-center">
             <div className="w-16 h-16 bg-red-50 text-[#E31E24] rounded-2xl flex items-center justify-center mb-4">
@@ -127,7 +129,7 @@ export default function AddGalleryModal({ onClose, onSuccess, initialData }: Pro
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-10 space-y-6">
+        <form onSubmit={handleSubmit} className="p-10 space-y-6 overflow-y-auto">
           <div className="space-y-1.5">
             <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Asset Title</label>
             <input

@@ -86,11 +86,11 @@ useEffect(() => {
             <div className="bg-[#e0f0ff] text-[#004795] w-14 h-14 rounded-2xl flex items-center justify-center mb-6">
               <Users className="w-7 h-7" />
             </div>
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Accounts</p>
+            <p className="font-black text-black-400 text-[20px] tracking-widest">Total Accounts</p>
             <h2 className="text-5xl font-black text-black">{userMeta.total}</h2>
             <div className="mt-4 flex items-center gap-2">
-              <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-              <span className="text-[10px] font-black text-[#004795] uppercase">Verified Registry</span>
+              <span className="w-2 h-2 bg-[#004795] rounded-full animate-pulse"></span>
+              <span className="text-[10px] font-black text-[#004795] text-[20px]">Verified Registry</span>
             </div>
           </div>
           <Users className="absolute -bottom-8 -right-8 w-40 h-40 text-slate-50 group-hover:text-[#e0f0ff] transition-colors duration-500" />
@@ -102,16 +102,16 @@ useEffect(() => {
             <div className="bg-[#e0f0ff] text-[#004795] w-14 h-14 rounded-2xl flex items-center justify-center mb-6">
               <Megaphone className="w-7 h-7" />
             </div>
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Global Notices</p>
+            <p className="font-black text-black text-[20px] tracking-widest">Global Notices</p>
             <h2 className="text-5xl font-black mb-6 text-black">{announcementMeta.total}</h2>
             <div className="flex gap-4">
               <div className="flex flex-col">
-                <span className="text-[9px] font-black text-slate-400 uppercase opacity-60">Published</span>
+                <span className="text-[15px] font-black text-blue-800 ">Published</span>
                 <span className="text-xl font-black text-black">{publishedCount}</span>
               </div>
               <div className="w-px h-8 bg-white/20 self-end"></div>
               <div className="flex flex-col">
-                <span className="text-[9px] font-black text-slate-400 uppercase opacity-60">Drafts</span>
+                <span className="text-[15px] font-black text-blue-800  ">Drafts</span>
                 <span className="text-xl font-black text-black">{draftCount}</span>
               </div>
             </div>
@@ -124,11 +124,11 @@ useEffect(() => {
             <div className="bg-[#e0f0ff] text-[#004795] w-14 h-14 rounded-2xl flex items-center justify-center mb-6">
               <ImageIcon className="w-7 h-7" />
             </div>
-            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Media Assets</p>
+            <p className="text-[20px] font-black text-black  tracking-widest">Gallery</p>
             <h2 className="text-5xl font-black text-black">{gallery.length}</h2>
             <p className="text-[10px] text-[#004795] mt-4 font-black uppercase tracking-widest">Gallery Live</p>
           </div>
-          <ShieldCheck className="absolute -bottom-8 -right-8 w-40 h-40 text-[#004795] opacity-[0.03]" />
+          {/* <ShieldCheck className="absolute -bottom-8 -right-8 w-40 h-40 text-[#004795] opacity-[0.03]" /> */}
         </div>
       </div>
 
@@ -167,10 +167,10 @@ useEffect(() => {
                 <div key={user.id} className="px-8 py-5 flex items-center justify-between hover:bg-[#e0f0ff]/30 transition-colors group">
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 rounded-2xl bg-black text-white flex items-center justify-center font-black text-sm group-hover:bg-[#004795] transition-all">
-                      {user.email.charAt(0).toUpperCase()}
+                      {user.firstName.charAt(0).toUpperCase()}{user.lastName.charAt(0).toUpperCase()}
                     </div>
                     <div>
-                      <p className="text-sm font-black text-black">{user.email}</p>
+                      <p className="text-sm font-black text-black">{user.firstName} {user.lastName}</p>
                       <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">{user.role} <span className="mx-1">•</span> {user.phone}</p>
                     </div>
                   </div>
@@ -209,7 +209,7 @@ useEffect(() => {
           </section>
 
           {/* Branded Quick Action */}
-          <div className="bg-[#004795] p-8 rounded-[3rem] shadow-xl text-white">
+          {/* <div className="bg-[#004795] p-8 rounded-[3rem] shadow-xl text-white">
             <div className="flex justify-between items-start mb-4">
               <Plus className="w-8 h-8 opacity-50" />
               <ArrowUpRight className="w-5 h-5 opacity-50" />
@@ -219,7 +219,7 @@ useEffect(() => {
             <button className="w-full bg-white text-[#004795] py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-black hover:text-white transition-all">
               Compose Notice
             </button>
-          </div>
+          </div> */}
         </div>
 
       </div>

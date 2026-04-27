@@ -129,7 +129,7 @@ async function handleSubmit() {
       onClick={handleOverlayClick}
       className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300"
     >
-      <div className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl border border-slate-200 overflow-hidden animate-in zoom-in-95 duration-300">
+      <div className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl border border-slate-200 overflow-hidden animate-in zoom-in-95 duration-300 overflow-y-auto">
         
         {/* Header */}
         <div className="px-8 pt-8 pb-6 flex items-center justify-between">
@@ -175,7 +175,7 @@ async function handleSubmit() {
             />
           </div>
 
-          <div className="space-y-1.5">
+          {/* <div className="space-y-1.5">
             <label className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">
               <ImageIcon size={12} /> Cover Image URL (Optional)
             </label>
@@ -186,12 +186,12 @@ async function handleSubmit() {
               onChange={(e) => setField("imageUrl", e.target.value)}
               className="w-full px-5 py-3.5 rounded-2xl border border-slate-100 bg-slate-50 focus:bg-white focus:border-[#E31E24] outline-none text-sm font-medium transition-all"
             />
-          </div>
+          </div> */}
 
           {/* Toggle Switch */}
           <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 mt-2">
             <div className="flex items-center gap-3">
-               <div className={`p-2 rounded-lg ${form.isPublished ? "bg-green-100 text-green-600" : "bg-slate-200 text-slate-500"}`}>
+               <div className={`p-2 rounded-lg ${form.isPublished ? "bg-green-100 text-[#004795]" : "bg-slate-200 text-slate-500"}`}>
                  <Send size={16} />
                </div>
                <span className="text-sm font-bold text-slate-700">Publish immediately</span>
