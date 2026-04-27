@@ -37,7 +37,7 @@ export default function GalleryPage() {
       // 1. Build the query string
       const params = new URLSearchParams({
         page: currentPage.toString(),
-        limit: "12",
+        limit: "18",
         type: "gallery",
         published: "true"
       });
@@ -108,7 +108,7 @@ export default function GalleryPage() {
                   </div>
                   
                   <div className="absolute inset-0 bg-gradient-to-t from-[#004795]/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-8">
-                    <h3 className="text-white font-black text-lg uppercase tracking-tight transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                    <h3 className="text-white font-black text-lg  tracking-tight transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                       {image.title}
                     </h3>
                     {image.subtitle && (

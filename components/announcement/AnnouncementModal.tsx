@@ -129,17 +129,14 @@ async function handleSubmit() {
       onClick={handleOverlayClick}
       className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300"
     >
-      <div className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl border border-slate-200 overflow-hidden animate-in zoom-in-95 duration-300 overflow-y-auto">
-        
+      <div className="bg-white w-full max-w-lg max-h-[90vh] rounded-[2.5rem] shadow-2xl border border-slate-200 animate-in zoom-in-95 duration-300 flex flex-col ">        
         {/* Header */}
         <div className="px-8 pt-8 pb-6 flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-black text-slate-900 leading-none">
-              {isEdit ? "Update Post" : "New Post"}
+              {isEdit ? "Update Announcement" : "New Announcement"}
             </h2>
-            <p className="text-[10px] text-[#E31E24] font-bold uppercase tracking-[0.2em] mt-2">
-              Kigali Harvest Portal
-            </p>
+            
           </div>
           <button onClick={onClose} className="p-2 rounded-full bg-slate-100 text-slate-400 hover:bg-red-50 hover:text-[#E31E24] transition-colors">
             <X size={20} />
@@ -147,7 +144,8 @@ async function handleSubmit() {
         </div>
 
         {/* Body */}
-        <div className="px-8 pb-8 space-y-5">
+        {/* <div className="px-8 pb-8 space-y-5"> */}
+        <div className="px-8 pb-8 space-y-5 overflow-y-auto ">
           
           <div className="space-y-1.5">
             <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Heading</label>
@@ -199,7 +197,7 @@ async function handleSubmit() {
             <button 
               onClick={() => setField("isPublished", !form.isPublished)}
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                form.isPublished ? "bg-green-500" : "bg-slate-300"
+                form.isPublished ? "bg-[#004795]" : "bg-slate-300"
               }`}
             >
               <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${

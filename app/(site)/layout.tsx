@@ -7,7 +7,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="flex flex-col min-h-screen">
         <Header />
         {/* This div grows to fill the space between Header and Footer */}
-        <div className="flex-grow pt-3">
+        <div className="flex-grow  ">
           {children}
         </div>
         <Footer />

@@ -251,8 +251,8 @@ export default function GalleryPage() {
       {/* HEADER */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-10 gap-6 bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100">
         <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">KIGALI HARVEST  SCHOOL <span className="text-[#E31E24]">GALLERY</span></h1>
-          {/* <p className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em] mt-1">Administrative Media Console</p> */}
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight">KIGALI HARVEST <span className="text-[#E31E24]">GALLERY</span></h1>
+          <p className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em] mt-1">Administrative Media Console</p>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
@@ -334,15 +334,15 @@ export default function GalleryPage() {
                   </div>
                 </div>
 
-                <div className="p-8">
-                  <h2 className="font-black text-lg text-slate-900 truncate mb-1 leading-tight uppercase">
+                <div className="p-3">
+                  <h2 className="font-black text-[15px] text-slate-900  mb-1 leading-tight">
                     {item.title}
                   </h2>
                   <p className="text-[11px] font-bold text-slate-400 truncate mb-6">
                     {item.subtitle || "Portal Image"}
                   </p>
 
-                  <div className="flex items-center justify-between pt-6 border-t border-slate-50">
+                  <div className="flex items-center justify-between border-t border-slate-50">
                     <button 
                       onClick={() => handleUpdateStatus(item)}
                       className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${

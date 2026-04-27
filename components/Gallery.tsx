@@ -28,7 +28,7 @@ export function Gallery() {
       setLoading(true);
       const params = new URLSearchParams();
       params.append("page", "1");
-      params.append("limit", "6"); // Only fetch the first 6 pictures
+      params.append("limit", "15"); // Only fetch the first 6 pictures
       params.append("type", "gallery");
       params.append("published", "true");
       

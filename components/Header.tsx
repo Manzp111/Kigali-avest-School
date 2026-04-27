@@ -30,7 +30,7 @@ export function Header() {
   };
 
   return (
-    <header className="fixed top-0 w-full z-50 bg-white shadow-sm">
+    <header className="fixed top-0 w-full z-50 bg-white shadow-xl pb-[9px]">
       <AnnouncementPopup />
       <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between h-20">        
         
