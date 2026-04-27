@@ -14,11 +14,14 @@ export function StickyButtons() {
       </a>
 
       <a
-        href="#contact"
+        href="https://mail.google.com/mail/?view=cm&to=kigaliharvestschool@yahoo.fr&su=R:E&body=Write%20your%20message%20like%20to%20here"      
+        target="_blank"
+        rel="noopener noreferrer"
         className="fixed bottom-6 left-6 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full shadow-2xl z-50 transition-all hover:scale-110"
       >
         Enroll Now 
       </a>
+         
     </>
   );
 }

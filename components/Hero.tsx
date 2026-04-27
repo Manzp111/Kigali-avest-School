@@ -85,13 +85,13 @@ useEffect(() => {
             {/* Admissions Open 2026/27 */}
           </div>
           
-          <h2 className="text-5xl md:text-8xl font-black mb-6 leading-[1.1] tracking-tight">
+          <h2 className="text-2xl md:text-7xl font-black mb-6 leading-[1.1] tracking-tight ">
             Strive For The <br />
             <span className="text-[#E31E24]">Best Harvest</span>
           </h2>
           
-          <p className="text-lg md:text-2xl mb-10 text-blue-50/90 leading-relaxed max-w-2xl font-medium">
-            Quality Nursery and Primary Education in Kigali. We cultivate excellence through Christian values for Rwanda's future generations.
+          <p className="text-lg md:text-2xl mb-10 text-blue-50/90 leading-relaxed max-w-2xl font-medium font-sans">
+            Quality Nursery and Primary Education in Kigali focused on providing quality education, culture, and christian values for sustainability of Rwanda's future generations.
           </p>
 
           {/* Buttons - Updated to School Logo Colors */}
@@ -111,10 +111,10 @@ useEffect(() => {
           </div>
 
           {/* Social Proof */}
-          <div className="flex items-center text-blue-100 bg-black/30 backdrop-blur-md w-fit p-4 rounded-3xl border border-white/10 shadow-2xl">
+          <div className="flex items-center text-blue-100  w-fit p-4 rounded-3xl">
             <p className="text-xs md:text-sm font-medium flex items-center gap-3">
-              <span className="text-3xl font-black text-white font-extrabold ">500+</span> 
-              <span className="opacity-80">Parents trust our <br/> excellence</span>
+              <span className="text-[18px] font-black text-[#E31E24] font-extrabold ">500+</span> 
+              <span className=" text-[15px] ml-[-10px]">Parents trust us with their children's future</span>
             </p>
           </div>
         </div>

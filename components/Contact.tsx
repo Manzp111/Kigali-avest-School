@@ -25,7 +25,7 @@ export function Contact() {
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-black text-[#004795] mb-4 tracking-tight">
+          <h2 className="text-4xl text-blue-900 mb-4 font-bold tracking-tight">
             Get in Touch
           </h2>
           <div className="flex justify-center gap-2 mb-6">

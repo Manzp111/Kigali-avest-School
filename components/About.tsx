@@ -10,8 +10,8 @@ export function About() {
         </div>
 
         <div className="text-center mb-12">
-          <h2 className="text-4xl text-blue-900 mb-4">Welcome to Kigali Harvest School</h2>
-          <div className="w-24 h-1 bg-green-500 mx-auto mb-8"></div>
+          <h2 className="text-4xl text-blue-900 mb-4 font-bold tracking-tight">Welcome to Kigali Harvest School</h2>
+          <div className="w-24 h-1 bg-[#004795] mx-auto mb-8"></div>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8 mb-12">

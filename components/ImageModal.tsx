@@ -58,16 +58,7 @@ export default function ImageModal({ src, alt, onClose }: Props) {
             className="max-h-[80vh] w-auto object-contain select-none"
           />
           
-          {/* BOTTOM CAPTION BAR */}
-          <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-6 pt-12">
-            <h3 className="text-white font-bold text-lg md:text-xl tracking-tight">
-              {alt}
-            </h3>
-            <div className="flex items-center gap-2 text-blue-300 text-xs mt-1 uppercase font-black tracking-widest">
-              <ZoomIn className="w-3 h-3" />
-              High Resolution View
-            </div>
-          </div>
+        
         </div>
 
         {/* CLICK OUTSIDE HINT */}

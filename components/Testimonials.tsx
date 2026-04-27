@@ -7,20 +7,20 @@ const testimonials = [
   {
     name: 'NZEYIMANA Francois Xavier',
     image: '/imports/Screenshot_2026-04-16_110117.png',
-    grade: 'parents of children in middle and upper class nursery',
-    text: 'We are proud to entrust our children to this Christian school, where they are nurtured in both academic excellence and strong social values. Through diverse club activities, students grow in knowledge, character, and confidence.'
+    grade: 'Parent of Middle Class Nursery Student',
+    text: 'We are proud to entrust our children to this Christian school, where they are nurtured in both academic excellence and strong social values. Through diverse club activities, students grow in knowledge, character, and confidence in engaging with others.'
   },
   {
     name: 'MUTESI Adrienne',
     image: '/imports/Screenshot_2026-04-16_104329.png',
-    grade: 'parents of children in middle and upper class nursery',
-    text: 'As a ministry of Restoration Church, this school instills the Word of God while nurturing children through music, drama, and quality education. It builds strong values, good character, and language excellence.'
+    grade: 'Parent of Grade 2 and Grade 5 Students',
+    text: 'As a ministry of Restoration Church, this school instills the Word of God while nurturing children through music, drama, and quality education. It builds strong values, good character, and language excellence—my children now speak English fluently both at school and at home.'
   },
   {
     name: 'KABERA Marcel',
     image: '/imports/Screenshot_2026-04-16_104736.png',
-    grade: 'parents of children in upper class nursery',
-    text: 'This school provides excellent teaching and academic results. Through weekly Friday sermons and prayer gatherings, students develop strong values and discipline, which is why I confidently encourage other parents to enroll.'
+    grade: 'Parent of Upper Class Nursery Student',
+    text: 'This school provides excellent teaching and academic results, elping children achieve distinction and success in their studies. Through weekly Friday sermons and prayer gatherings, students develop strong values, discipline and admirable behavior, which is why I confidently encourage other parents to enroll their children here.'
   }
 ];
 
@@ -31,8 +31,8 @@ export function Testimonials() {
         
         {/* Header Section - Blue & Black Only */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-black text-[#004795] mb-4 tracking-tight">
-            Our Parents Say
+          <h2 className="text-4xl text-blue-900 mb-4 font-bold tracking-tight">
+            What Our Parents Say
           </h2>
           {/* Blue Divider (Black could be used here too if preferred) */}
           <div className="flex justify-center gap-2 mb-6">
@@ -40,7 +40,7 @@ export function Testimonials() {
             <div className="w-8 h-2 bg-[#004795] rounded-full opacity-50"></div>
           </div>
           <p className="text-xl text-black/80 font-medium max-w-2xl mx-auto">
-            Hear from our trusted community of parents about the Kigali Harvest experience.
+            Hear from our trusted community of parents
           </p>
         </div>
 
