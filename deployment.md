@@ -1,4 +1,4 @@
-# 🚀 Deployment Guide – Kigali Harvest School
+#  Deployment Guide – Kigali Harvest School
 
 This guide covers everything needed to deploy the system — via Docker (recommended) or manual setup.
 
@@ -215,7 +215,7 @@ Replace the upload logic in `app/api/gallery/route.ts` with your provider's SDK.
 - [ ] `.env` file created with all required variables
 - [ ] Database migrated (Drizzle or manual SQL)
 - [ ] Cloudinary credentials configured
-- [ ] First Headmaster account promoted via SQL
+- [ ] First Headmaster account promoted via SQL or manually
 - [ ] Docker running — or manual setup verified
 
-System is production-ready when all boxes above are checked. 
+if something went wrong you can reach us on gilbertnshimyimana11@gmail.com
