@@ -1,4 +1,4 @@
-# 🌾 Kigali Harvest  School
+# Kigali Harvest  School
 
 A full-stack **Next.js + PostgreSQL + Drizzle ORM** application for managing  announcements, gallery, and users in a school system.
 
@@ -18,13 +18,13 @@ A full-stack **Next.js + PostgreSQL + Drizzle ORM** application for managing  an
 
 ##  User Roles
 
-### 👑 Headmaster
+###  Headmaster
 - Full system access
 - Manage all users (create, update, delete)
 - Assign and change user roles
 - Verify or unverify user accounts
 
-### 👨 Teacher
+###  Teacher
 - Access own data only
 - Cannot modify roles or verification status
 - Restricted API access
@@ -46,7 +46,8 @@ A full-stack **Next.js + PostgreSQL + Drizzle ORM** application for managing  an
 
 ```
 app/              → Next.js routes (frontend + API)
-   /app 
+   /api
+     
 lib/
   db/             → Database config (Drizzle)
   services/       → Business logic
