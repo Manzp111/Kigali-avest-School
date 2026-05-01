@@ -19,17 +19,21 @@ export const userService = {
     limit,
     email,
     role,
+    userId,
   }: {
     page: number;
     limit: number;
     email?: string | null;
-    role?: UserRole | null; // ✅ FIXED TYPE
+    role?: UserRole | null;
+    userId?: string;
   }) {
     const result = await userRepository.getUsersWithFilters({
       page,
       limit,
       email,
       role,
+      userId,
+      
     });
 
     return {

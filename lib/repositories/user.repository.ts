@@ -104,13 +104,14 @@ async getUsersWithFilters({
   limit,
   email,
   role,
+  userId,
 }: {
   page: number;
   limit: number;
   email?: string | null;
   role?: UserRole | null;
+  userId?: string;
 }) {
-  // ✅ SAFE PAGINATION
   const safePage =
     Number.isFinite(page) && page > 0 ? page : 1;
 
@@ -124,7 +125,7 @@ async getUsersWithFilters({
     throw new Error("Invalid role value");
   }
 
-  // ✅ FILTERS
+  // ✅ FILTERS (DECLARE FIRST!)
   const filters: SQL[] = [];
 
   if (email) {
@@ -135,11 +136,14 @@ async getUsersWithFilters({
     filters.push(eq(users.role, role));
   }
 
+  if (userId) {
+    filters.push(eq(users.id, userId)); // ✅ correct place
+  }
+
   const whereClause = filters.length
     ? and(...filters)
     : undefined;
 
-  // ✅ BASE SELECT (NO DUPLICATION)
   const baseSelect = db
     .select({
       id: users.id,
@@ -154,20 +158,15 @@ async getUsersWithFilters({
     })
     .from(users);
 
-  // ✅ APPLY WHERE SAFELY
   const finalQuery = whereClause
     ? baseSelect.where(whereClause)
     : baseSelect;
 
-  // 📦 DATA QUERY
   const data = await finalQuery
     .orderBy(desc(users.createdAt))
     .limit(safeLimit)
     .offset(offset);
 
-  // =========================
-  // 🔢 COUNT QUERY (FIXED)
-  // =========================
   const baseCount = db
     .select({ count: sql<number>`count(*)` })
     .from(users);
@@ -180,7 +179,6 @@ async getUsersWithFilters({
 
   const total = Number(totalResult[0].count ?? 0);
 
-  // 📦 RESPONSE
   return {
     data,
     meta: {
@@ -224,8 +222,9 @@ async updateUser(
     })
     .where(eq(users.id, id))
     .returning();
+    const { password, ...safeUser } = result[0];
 
-  return result[0];
+  return safeUser;
 },
 async deleteUser(id: string) {
   const result = await db

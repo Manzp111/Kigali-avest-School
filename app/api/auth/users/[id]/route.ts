@@ -39,10 +39,12 @@ export async function PATCH(
     const auth = await verifyAuth(req);
     if (!auth.success) return auth.response;
 
-    const { id } = await params;
-    const body = await req.json();
+    const currentUser = auth.payload!;
 
-    // The validator will now handle both profile edits and the verification toggle
+    
+    const { id } = await params;
+
+    const body = await req.json();
     const parsed = updateUserSchema.safeParse(body);
 
     if (!parsed.success) {
@@ -56,16 +58,36 @@ export async function PATCH(
       );
     }
 
-    const updated = await userService.updateUser(id, parsed.data);
+    const data = parsed.data;
+
+    const isHeadmaster = currentUser.role === "Headmaster";
+
+    if (!isHeadmaster) {
+      delete data.role;
+      delete data.isVerified;
+    }
+
+    if (!isHeadmaster && currentUser.userId !== id) {
+      return NextResponse.json(
+        { success: false, message: "Forbidden" },
+        { status: 403 }
+      );
+    }
+
+    const updated = await userService.updateUser(id, data);
 
     return NextResponse.json({
       success: true,
       message: "User updated successfully",
       data: updated,
     });
+
   } catch (error: any) {
     return NextResponse.json(
-      { success: false, message: error.message || "Update failed" },
+      {
+        success: false,
+        message: error.message || "Update failed",
+      },
       { status: 400 }
     );
   }
@@ -75,7 +97,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // 🔐 AUTH CHECK
+    //  AUTH CHECK
     const auth = await verifyAuth(req);
     if (!auth.success) return auth.response;
 

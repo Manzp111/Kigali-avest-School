@@ -3,11 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 export function withErrorHandler(handler: any) {
   return async (req: NextRequest, context?: any) => {
     const requestId = Math.random().toString(36).substring(7); // Unique ID to track this specific request
-    // console.log(`[START REQUEST ${requestId}]: ${req.method} ${req.url}`);
 
     try {
-      // Trace: Before executing the actual route logic
-      // console.log(`[TRACE ${requestId}]: Entering handler logic...`);
       
       const response = await handler(req, context);
       
@@ -40,8 +37,8 @@ export function withErrorHandler(handler: any) {
 
       let responseMessage = err.message || "Internal Server Error";
       
+      
       if (isConnError) {
-        // console.warn(`[DIAGNOSTIC ${requestId}]: Potential DB Connection issue detected.`);
         responseMessage = "Database connection failed. Verify DATABASE_URL in Vercel Settings.";
       }
 
@@ -49,7 +46,7 @@ export function withErrorHandler(handler: any) {
         {
           success: false,
           message: responseMessage,
-          requestId, // Return ID so you can find this exact error in Vercel logs
+          requestId,
           stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
         },
         { status: statusCode }

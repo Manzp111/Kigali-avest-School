@@ -16,14 +16,13 @@ export async function POST(req: NextRequest) {
     }
 
     // 1. Attempt login via service
-    // If this fails, it's likely a DB connection or missing "users" table
     const user = await authService.login(result.data);
 
     // 2. Retrieve Secrets
     const accessSecret = process.env.JWT_ACCESS_SECRET;
     const refreshSecret = process.env.JWT_REFRESH_SECRET;
 
-    // 3. Check if secrets exist before signing (JWT will crash if undefined)
+    // 3. Check if secrets exist before signing
     if (!accessSecret || !refreshSecret) {
       throw new Error(`MISSING_SECRETS: Access=${!!accessSecret}, Refresh=${!!refreshSecret}`);
     }

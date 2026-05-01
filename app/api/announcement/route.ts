@@ -6,7 +6,7 @@ import { withErrorHandler } from "@/lib/utils/db-safe";
 
 export type AuthPayload = {
   userId: string;
-  role?: string;
+  role: "Headmaster" | "teacher" | null;
 };
 
 async function requirePostAuth(req: NextRequest): Promise<AuthPayload> {

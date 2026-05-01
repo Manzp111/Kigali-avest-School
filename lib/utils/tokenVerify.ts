@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
+import { db } from "@/lib/db";
+import { users } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
 
 export type AuthPayload = {
   userId: string;
-  role?: string;
+  role: string;
 };
 
 export async function verifyAuth(req: NextRequest) {
@@ -38,15 +41,34 @@ export async function verifyAuth(req: NextRequest) {
 
     const { payload } = await jwtVerify(token, secret);
 
+    // 🔐 ALWAYS GET FRESH USER FROM DATABASE (IMPORTANT FIX)
+    const user = await db.query.users.findFirst({
+      where: eq(users.id, payload.userId as string),
+    });
+
+    if (!user) {
+      return {
+        success: false,
+        response: NextResponse.json(
+          { message: "User not found" },
+          { status: 401 }
+        ),
+      };
+    }
+
+    // 🔥 NEVER TRUST TOKEN ROLE — ALWAYS USE DB ROLE
     return {
       success: true,
-      payload: payload as AuthPayload,
+      payload: {
+        userId: user.id,
+        role: user.role,
+      },
     };
   } catch (error) {
     return {
       success: false,
       response: NextResponse.json(
-        { message: "Unauthorized - Invalid token" },
+        { message: "Unauthorized - Invalid or expired token" },
         { status: 401 }
       ),
     };

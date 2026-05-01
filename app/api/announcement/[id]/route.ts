@@ -6,9 +6,7 @@ import { verifyAuth } from "@/lib/utils/tokenVerify";
 // ✅ Next.js 16 requires params as Promise
 type Params = Promise<{ id: string }>;
 
-// ======================
 // GET
-// ======================
 export async function GET(
   req: NextRequest,
   { params }: { params: Params }
@@ -41,9 +39,7 @@ if (!auth.success) {
   }
 }
 
-// ======================
 // PATCH
-// ======================
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Params }
@@ -81,9 +77,7 @@ export async function PATCH(
   }
 }
 
-// ======================
 // DELETE
-// ======================
 export async function DELETE(
   req: NextRequest,
   { params }: { params: Params }
