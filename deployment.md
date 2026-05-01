@@ -3,6 +3,24 @@
 This guide covers everything needed to deploy the system — via Docker (recommended) or manual setup.
 
 ---
+#Project Structure
+kigali_havest/
+├── app/                      # UI Views & Routes
+│   ├── (site)/               # Public-facing school pages
+│   ├── admin/                # School management dashboard
+│   ├── api/                  # Backend API endpoints
+│   ├── auth/                 # Auth logic (JWT/Middleware)
+│   ├── gallery/              # Public gallery view
+│   ├── login/                # Sign-in view
+│   └── signup/               # Registration view
+├── lib/                      
+│   └── db/                   # Database Layer
+│       ├── index.ts          
+│       ├── schema.ts         # Table definitions (Postgres)
+│       └── migrations/       # SQL migration files
+├── drizzle.config.ts         # ORM configuration
+├── Dockerfile                # App containerization
+└── .env.local                      # Remote DATABASE_URL & Secrets
 
 ##  Environment Variables
 
