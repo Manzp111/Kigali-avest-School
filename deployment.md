@@ -3,6 +3,7 @@
 This guide covers everything needed to deploy the system — via Docker (recommended) or manual setup.
 
 ---
+```
 #Project Structure
 kigali_havest/
 ├── app/                      # UI Views & Routes
@@ -21,10 +22,10 @@ kigali_havest/
 ├── drizzle.config.ts         # ORM configuration
 ├── Dockerfile                # App containerization
 └── .env.local                      # Remote DATABASE_URL & Secrets
-
+```
 ##  Environment Variables
 
-Create a `.env` file in the project root:
+Create a `.env.local` file in the project root:
 
 ```env
 DATABASE_URL=postgresql://user:password@db:5432/mydb
