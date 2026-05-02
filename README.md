@@ -1,112 +1,155 @@
-# Kigali Harvest  School
+#  Kigali Harvest School
 
-A full-stack **Next.js + PostgreSQL + Drizzle ORM** application for managing  announcements, gallery, and users in a school system.
+A full-stack school management platform built with **Next.js**, **PostgreSQL**, and **Drizzle ORM** — powering announcements, a media gallery, and role-based administration.
+
+ **Live App:** [kigalihavestschool.vercel.app](https://kigalihavestschool.vercel.app) or anather domain or localhost
 
 ---
 
-##  Tech Stack
+##  Table of Contents
+
+- 1.[Tech Stack](#tech-stack)
+- 2.[User Roles](#user-roles)
+- 3.[Features](#features)
+- 4.[Project Structure](#project-structure)
+- 5.[Database Schema](#database-schema)
+- 6.[Authentication](#authentication)
+- 7.[Routes Overview](#routes-overview)
+- 8.[Environment Variables](#environment-variables)
+- 9.[Security](#security)
+- 10.[Getting Started](#getting-started)
+
+---
+
+## 1. Tech Stack
 
 | Layer | Technology |
 |---|---|
 | Framework | Next.js (App Router) + TypeScript |
-| Database | PostgreSQL + Drizzle ORM |
-| Auth | JWT (Access + Refresh Tokens) |
-| Storage | Cloudinary (image uploads) |
-| Deployment | Docker |
+| Database | PostgreSQL |
+| ORM | Drizzle ORM |
+| Authentication | JWT (Access + Refresh Tokens) |
+| Storage | Cloudinary |
+| Deployment | Docker + Vercel | or oter hosting platform 
 
 ---
 
-##  User Roles
+## 2.  User Roles
 
 ###  Headmaster
-- Full system access
-- Manage all users (create, update, delete)
-- Assign and change user roles
-- Verify or unverify user accounts
+- Full system control
+- Manage users —  update, delete
+- Assign and modify roles (Headmaster / Teacher)
+- Verify or unverify accounts
+
 
 ###  Teacher
-- Access own data only
+- Access and update personal data only and all announcement and scool gallery
 - Cannot modify roles or verification status
-- Restricted API access
+- Restricted API permissions
 
 ---
 
-##  Core Features
+## 3.  Features
 
-- **Authentication** — JWT-based login with access + refresh tokens
-- **Role-Based Access Control** — Role always validated from the database
-- **User Management** — Full CRUD for headmaster; self-access only for teachers
-- **Announcements** — Create and manage school-wide announcements
-- **Gallery** — Image uploads and management via Cloudinary
-- **Pagination & Filters** — Applied across all list endpoints
+### Authentication
+- JWT-based with Access + Refresh tokens
+- HTTP-only cookie storage for refresh tokens
+- Token rotation on refresh
+
+###  Role-Based Access Control
+- Roles validated from the database on every request
+- Strict separation between admin and teacher capabilities
+
+###  User Management
+- Full CRUD operations (Headmaster only)
+- Teachers can view and update their own profile
+
+###  Announcements
+- Create and manage school-wide announcements
+
+###  Gallery
+- Image uploads via Cloudinary
+- Metadata and URL storage in the database
+
+### Pagination & Filtering
+- Applied across all list endpoints for performance at scale
 
 ---
 
-## Project Structure
+## 4.Project Structure
 
 ```
-app/              → Next.js routes (frontend + API)
-   /api
-     
-lib/
-  db/             → Database config (Drizzle)
-  services/       → Business logic
-  repositories/   → Database queries
-  utils/          → Auth helpers + utilities
-components/       → UI components
-public/           → Static assets
+├── app/
+│   ├── api/              # Backend API routes
+│   └── ...               # Next.js page routes
+├── lib/
+│   ├── db/               # Drizzle database configuration
+│   ├── services/         # Business logic layer
+│   ├── repositories/     # Database query layer
+│   └── utils/            # Helpers (auth, tokens, etc.)
+├── components/           # Reusable UI components
+└── public/               # Static assets
 ```
 
 ---
 
-##  Database
+##  5.Database Schema
 
-Uses **PostgreSQL** with **Drizzle ORM**.
-
-| Table | Purpose |
+| Table | Description |
 |---|---|
-| `users` | Accounts, roles, verification |
-| `announcements` | School announcements |
-| `gallery` | Image metadata + Cloudinary URLs |
-| `testimonials` | User-submitted testimonials |
+| `users` | User accounts, roles, and verification status |
+| `announcements` | School-wide announcements |
+| `gallery` | Image metadata and Cloudinary URLs |
+
 
 ---
 
-##  Authentication
+##  6.Authentication
 
 | Token | Lifetime | Storage |
 |---|---|---|
 | Access Token | 1 day | Response body |
 | Refresh Token | 7 days | HTTP-only cookie |
 
+---
 
+##  7.Routes Overview
+
+| Route | Description | Access |
+|---|---|---|
+| `/` | Homepage | Public |
+| `/login` | Login page | Public |
+| `/signup` | User registration | Public |
+| `/gallery` | School photo gallery | Public |
+| `/admin` | Admin dashboard | Headmaster && teacher only  |
 
 ---
 
-##  Cloudinary
+## 8.Environment Variables
 
-Used for uploading and serving:
-- Gallery images
-- Background images
+### Cloudinary
 
-**Required environment variables:**
-
+```env
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
 ```
-CLOUDINARY_CLOUD_NAME
-CLOUDINARY_API_KEY
-CLOUDINARY_API_SECRET
-```
+
+> Cloudinary is used for gallery image uploads and background images.
 
 ---
 
-##  Security Rules
+##  9.Security
 
-- Role is validated from the database on every protected request
-- Teachers cannot access admin-level endpoints
-- Only the `Headmaster` role has admin privileges
+- Roles are **always validated from the database** — never from token claims alone
+- Teachers **cannot access admin endpoints**, enforced at the API level
+- Only Headmasters can manage users, assign roles, or modify verification status
 
 ---
 
-##  Getting Started
+## 10. Getting Started
 
-See [`deployment.md`](./deployment.md) for full setup instructions — including Docker, manual setup, and database migrations.
+For full setup instructions including Docker configuration, database migrations, and environment setup:
+
+ See [deployment.md](./deployment.md)
